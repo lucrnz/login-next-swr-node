@@ -1,0 +1,18 @@
+.main {
+  padding: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 240px;
+  padding: 6px;
+}
+
+.form > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
