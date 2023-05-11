@@ -1,0 +1,16 @@
+{
+  "name": "http-only-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "concurrently \"cd be && npm install\" \"cd fe && npm install\"",
+    "all": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\""
+  },
+  "author": "lucdev<lucdev.gay>",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
