@@ -20,6 +20,8 @@ interface User {
   password: string;
 }
 
+type UserWithoutPass = Omit<User, "password">;
+
 const users: User[] = [
   {
     id: 1,
@@ -56,11 +58,18 @@ app.post("/login", (req: Request, res: Response) => {
   // Set token as HTTP-only cookie
   res.cookie("token", token, { httpOnly: true });
 
-  res.send({ success: true, message: "Logged in successfully" });
+  res.send({ success: true, message: "Logged in" });
+});
+
+app.post("/logout", (req: Request, res: Response) => {
+  if (req.cookies.token) {
+    res.clearCookie("token");
+  }
+  res.send({ success: true, message: "Logged out" });
 });
 
 interface AuthenticatedRequest extends Request {
-  user?: User;
+  user?: UserWithoutPass;
 }
 
 function authenticate(
@@ -86,12 +95,17 @@ function authenticate(
     }
 
     // User is authenticated, add user object to request and call next middleware
-    req.user = user;
+    const { password, ...userData } = user;
+    req.user = userData;
     next();
   } catch (err) {
     return res.status(401).send({ message: "Authentication failed" });
   }
 }
+
+app.get("/me", authenticate, (req: AuthenticatedRequest, res: Response) =>
+  res.send(req.user!)
+);
 
 app.get("/foo", authenticate, (req: AuthenticatedRequest, res: Response) => {
   res.send({ message: `Hello, ${req.user!.username}!` });
