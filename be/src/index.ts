@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { ApiStatusMessage } from "./types/Api.js";
 dotenv.config();
 
 const app = express();
@@ -80,7 +81,9 @@ function authenticate(
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).send({ message: "Authentication required" });
+    return res
+      .status(401)
+      .send({ success: false, message: "Authentication required" });
   }
 
   try {
@@ -91,7 +94,9 @@ function authenticate(
     const user = users.find((user) => user.id === userId);
 
     if (!user) {
-      return res.status(401).send({ message: "Authentication failed" });
+      return res
+        .status(401)
+        .send({ success: false, message: "Authentication failed" });
     }
 
     // User is authenticated, add user object to request and call next middleware
@@ -99,16 +104,21 @@ function authenticate(
     req.user = userData;
     next();
   } catch (err) {
-    return res.status(401).send({ message: "Authentication failed" });
+    return res
+      .status(401)
+      .send({ success: false, message: "Authentication failed" });
   }
 }
 
 app.get("/me", authenticate, (req: AuthenticatedRequest, res: Response) =>
-  res.send(req.user!)
+  res.send({ success: true, data: { user: req.user! } })
 );
 
 app.get("/foo", authenticate, (req: AuthenticatedRequest, res: Response) => {
-  res.send({ message: `Hello, ${req.user!.username}!` });
+  res.send({
+    success: true,
+    message: `Hello, ${req.user!.username}!`,
+  } as ApiStatusMessage);
 });
 
 app.get("/", (req: Request, res: Response) => {
