@@ -8,13 +8,14 @@ type NavigationProps = {
 export const Navigation: React.FC<NavigationProps> = ({ routes }) => (
   <ul>
     {Object.entries(routes).map(
-      ([key, value]) => <li><Link href={`/${key}`}>{value}</Link></li>)}
+      ([key, value]) => <li key={key}><Link href={`/${key}`}>{value}</Link></li>)}
   </ul>
 );
 
-const defaultNavigation = <Navigation routes={{
-  login: "Login",
-  home: "Home"
-}} />;
-
-export default () => <><h4>Navigation</h4>{defaultNavigation}</>;
+export default () => (<>
+  <h4>Navigation</h4>
+  <Navigation routes={{
+    login: "Login",
+    home: "Home"
+  }} />
+</>);
