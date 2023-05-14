@@ -12,15 +12,15 @@ export default () => {
         <title>Login - App</title>
       </Head>
       <main className={[styles['main'], inter.className].join(' ')} >
-        <h1>Login example</h1>
+        <span className={styles['title']}>Welcome - Login</span>
         <form className={styles['form']}>
           <div>
             <label htmlFor='email'>Email</label>
-            <input id="email" type="email" />
+            <input id="email" type="email" className={styles['text-field']} />
           </div>
           <div>
             <label htmlFor='password'>Password</label>
-            <input id="password" type="password" />
+            <input id="password" type="password" className={styles['text-field']} />
           </div>
           <input type="submit" value="Login" />
         </form>
