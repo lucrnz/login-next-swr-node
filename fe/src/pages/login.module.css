@@ -27,3 +27,7 @@
 .text-field {
   width: 100%;
 }
+
+.text-error {
+  color: red;
+}
