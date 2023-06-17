@@ -16,6 +16,8 @@ In this example, our backend team (an Express api) is setting a cookie, and we (
 
 You need [Node.js](https://nodejs.org/en) latest LTS version.
 
+Note: **Nix with direnv users:** Just by doing `direnv allow` in this directory the setup will be done and you can skip any install.
+
 ```sh
 npm i
 npm run all
