@@ -1,7 +1,7 @@
 import { StatusCode } from "status-code-enum";
 import { ApiStatusMessage } from "../types/Api.js";
 import { UserWithPassword } from "../types/User.js";
-import type { Request, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 
 import users from "../data/users.js";
 import jwt from "jsonwebtoken";
@@ -29,13 +29,20 @@ export const loginEndpointHandler = (req: Request, res: Response) => {
     } as ApiStatusMessage);
   }
 
-  // Generate JWT token
   const token = jwt.sign({ id: user.id }, secret, { expiresIn: "1h" });
 
   res.setHeader("cache-control", "no-cache");
 
-  // Set token as HTTP-only cookie
-  res.cookie("token", token, { httpOnly: true });
+  const environment = `${getEnv(EnvironmentVariable.NodeEnv)}`;
+
+  console.log("node env", environment);
+
+  const cookieConfig: CookieOptions =
+    environment === "production"
+      ? { httpOnly: true, sameSite: "none", secure: true }
+      : { httpOnly: true };
+
+  res.cookie("token", token, cookieConfig);
 
   res.send({ success: true, message: "Logged in" } as ApiStatusMessage);
 };
