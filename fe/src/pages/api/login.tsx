@@ -29,9 +29,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     const data = await apiResponse.json() as ApiStatusMessage;
+    res.setHeader("cache-control", "no-cache");
     res.status(apiResponse.status).json(data);
   }
   catch (e) {
+    res.setHeader("cache-control", "no-cache");
     res.status(StatusCode.ServerErrorInternal).json({ message: "Internal server error", success: false });
   }
 }

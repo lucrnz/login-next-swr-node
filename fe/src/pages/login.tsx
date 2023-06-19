@@ -1,10 +1,10 @@
-import Head from 'next/head';
 import styles from './login.module.css';
-import Navigation from '@/components/Navigation';
-import { defaultFont } from '@/config';
+import { useState, useRef } from 'react';
 import type { FormEvent } from 'react';
-import { useRef } from 'react';
-import { useState } from 'react';
+import { UserWithPassword } from '@/types/User';
+import { MainLayout } from '@/components/MainLayout';
+import { loginAction } from '@/utils/loginAction';
+import { useSWRConfig } from 'swr';
 
 enum Field {
   Password,
@@ -23,6 +23,7 @@ const validations: { [field in Field]: { validate: (value: string) => Boolean, m
 };
 
 export default () => {
+  const { mutate } = useSWRConfig();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [validationErrors, setValidationErrors] = useState<[Field, string][]>([]);
 
@@ -50,7 +51,7 @@ export default () => {
     return { errors, values };
   }
 
-  const formSubmitEventHandler = (event: FormEvent<HTMLFormElement>) => {
+  const formSubmitEventHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!formRef || !formRef.current || validationErrors.length > 0) {
@@ -63,31 +64,26 @@ export default () => {
       return;
     }
 
-    console.log({ email: values[Field.Email], password: values[Field.Password] });
+    const userData = { email: values[Field.Email], password: values[Field.Password] } as Partial<UserWithPassword>;
+    await loginAction(mutate.bind(null, null), userData);
   }
 
   return (
-    <>
-      <Head>
-        <title>Login - App</title>
-      </Head>
-      <main className={[styles['main'], defaultFont.className].join(' ')} >
-        <span className={styles['title']}>Welcome - Login</span>
-        <form className={styles['form']} onSubmit={formSubmitEventHandler} ref={formRef}>
-          <div>
-            <label htmlFor='email'>Email</label>
-            <input id="email" type="email" className={styles['text-field']} onBlur={validateInputs} />
-            {validationErrors.filter(([field, _]) => field === Field.Email).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
-          </div>
-          <div>
-            <label htmlFor='password'>Password</label>
-            <input id="password" type="password" className={styles['text-field']} onBlur={validateInputs} />
-            {validationErrors.filter(([field, _]) => field === Field.Password).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
-          </div>
-          <input type="submit" value="Login" />
-        </form>
-        <Navigation />
-      </main >
-    </>
+    <MainLayout title="Login">
+      <span className={styles['title']}>Welcome - Login</span>
+      <form className={styles['form']} onSubmit={formSubmitEventHandler} ref={formRef}>
+        <div>
+          <label htmlFor='email'>Email</label>
+          <input id="email" type="email" className={styles['text-field']} onBlur={validateInputs} />
+          {validationErrors.filter(([field, _]) => field === Field.Email).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
+        </div>
+        <div>
+          <label htmlFor='password'>Password</label>
+          <input id="password" type="password" className={styles['text-field']} onBlur={validateInputs} />
+          {validationErrors.filter(([field, _]) => field === Field.Password).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
+        </div>
+        <input type="submit" value="Login" />
+      </form>
+    </MainLayout>
   )
 }

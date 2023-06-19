@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     const apiResponse = await fetch('http://localhost:3002/logout', {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Cookie': req.cookies['token'] ? `token=${req.cookies['token']}` : ''
@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       res.setHeader('set-cookie', 'token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT');
     }
 
+    res.setHeader("cache-control", "no-cache");
     res.status(apiResponse.status).json({ success: true, message: "Logged out" });
   }
   catch (e) {
