@@ -1,7 +1,9 @@
 {
   "name": "http-only-fe",
   "version": "0.1.0",
-  "private": true,
+  "keywords": [],
+  "author": "lucdev<lucdev.net>",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
