@@ -6,11 +6,18 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "concurrently \"cd be && npm install\" \"cd fe && npm install\"",
-    "start": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\""
+    "start": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\"",
+    "prepare": "husky install"
   },
   "author": "lucdev<lucdev.net>",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.0.1"
+    "concurrently": "^8.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "2.8.8"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

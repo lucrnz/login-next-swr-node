@@ -25,7 +25,7 @@ export const loginEndpointHandler = (req: Request, res: Response) => {
   if (!user) {
     return res.status(StatusCode.ClientErrorForbidden).send({
       success: false,
-      message: "Invalid email or password",
+      message: "Invalid email or password"
     } as ApiStatusMessage);
   }
 

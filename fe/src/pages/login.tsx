@@ -1,23 +1,25 @@
-import styles from './login.module.css';
-import { useState, useRef } from 'react';
-import type { FormEvent } from 'react';
-import { UserWithPassword } from '@/types/User';
-import { MainLayout } from '@/components/MainLayout';
-import { loginAction } from '@/utils/loginAction';
-import { useSWRConfig } from 'swr';
+import styles from "./login.module.css";
+import { useState, useRef } from "react";
+import type { FormEvent } from "react";
+import { UserWithPassword } from "@/types/User";
+import { MainLayout } from "@/components/MainLayout";
+import { loginAction } from "@/utils/loginAction";
+import { useSWRConfig } from "swr";
 
 enum Field {
   Password,
   Email
 }
 
-const validations: { [field in Field]: { validate: (value: string) => Boolean, message: string } } = {
+const validations: {
+  [field in Field]: { validate: (value: string) => Boolean; message: string };
+} = {
   [Field.Email]: {
-    validate: (value: string) => (value.includes('@') && value.trim() !== ""),
+    validate: (value: string) => value.includes("@") && value.trim() !== "",
     message: "Email is invalid"
   },
   [Field.Password]: {
-    validate: (value: string) => (value.trim() !== ""),
+    validate: (value: string) => value.trim() !== "",
     message: "Password is empty"
   }
 };
@@ -25,11 +27,15 @@ const validations: { [field in Field]: { validate: (value: string) => Boolean, m
 export default () => {
   const { mutate } = useSWRConfig();
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [validationErrors, setValidationErrors] = useState<[Field, string][]>([]);
+  const [validationErrors, setValidationErrors] = useState<[Field, string][]>(
+    []
+  );
 
   function validateInputs() {
-    const emailInput: HTMLInputElement = formRef.current!.querySelector('#email')!;
-    const passwordInput: HTMLInputElement = formRef.current!.querySelector('#password')!;
+    const emailInput: HTMLInputElement =
+      formRef.current!.querySelector("#email")!;
+    const passwordInput: HTMLInputElement =
+      formRef.current!.querySelector("#password")!;
 
     const errors: [Field, string][] = [];
     const values = {
@@ -64,26 +70,55 @@ export default () => {
       return;
     }
 
-    const userData = { email: values[Field.Email], password: values[Field.Password] } as Partial<UserWithPassword>;
+    const userData = {
+      email: values[Field.Email],
+      password: values[Field.Password]
+    } as Partial<UserWithPassword>;
     await loginAction(mutate.bind(null, null), userData);
-  }
+  };
 
   return (
     <MainLayout title="Login">
-      <span className={styles['title']}>Welcome - Login</span>
-      <form className={styles['form']} onSubmit={formSubmitEventHandler} ref={formRef}>
+      <span className={styles["title"]}>Welcome - Login</span>
+      <form
+        className={styles["form"]}
+        onSubmit={formSubmitEventHandler}
+        ref={formRef}
+      >
         <div>
-          <label htmlFor='email'>Email</label>
-          <input id="email" type="email" className={styles['text-field']} onBlur={validateInputs} />
-          {validationErrors.filter(([field, _]) => field === Field.Email).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            className={styles["text-field"]}
+            onBlur={validateInputs}
+          />
+          {validationErrors
+            .filter(([field, _]) => field === Field.Email)
+            .map(([_, message], index) => (
+              <p key={index} className={styles["text-error"]}>
+                {message}
+              </p>
+            ))}
         </div>
         <div>
-          <label htmlFor='password'>Password</label>
-          <input id="password" type="password" className={styles['text-field']} onBlur={validateInputs} />
-          {validationErrors.filter(([field, _]) => field === Field.Password).map(([_, message], index) => <p key={index} className={styles['text-error']}>{message}</p>)}
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            className={styles["text-field"]}
+            onBlur={validateInputs}
+          />
+          {validationErrors
+            .filter(([field, _]) => field === Field.Password)
+            .map(([_, message], index) => (
+              <p key={index} className={styles["text-error"]}>
+                {message}
+              </p>
+            ))}
         </div>
         <input type="submit" value="Login" />
       </form>
     </MainLayout>
-  )
-}
+  );
+};

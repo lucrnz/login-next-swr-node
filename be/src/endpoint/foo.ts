@@ -10,6 +10,6 @@ export const fooEndpointHandler = (
 
   res.send({
     success: true,
-    message: `Hello, ${name}!`,
+    message: `Hello, ${name}!`
   } as ApiStatusMessage);
 };

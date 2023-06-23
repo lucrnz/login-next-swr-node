@@ -5,7 +5,7 @@ import { awaitCallbackIfNeeded } from "./awaitCallbackIfNeeded";
 
 export const logoutAction = async (mutate: () => void | Promise<unknown>) => {
   const result = await commonApiFetch<ApiStatusMessage>("logout", {
-    method: "POST",
+    method: "POST"
   });
 
   await awaitCallbackIfNeeded(mutate);

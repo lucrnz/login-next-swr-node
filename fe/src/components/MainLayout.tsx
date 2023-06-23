@@ -5,13 +5,19 @@ import Head from "next/head";
 import styles from "./MainLayout.module.css";
 
 type MainProps = {
-  classList?: string[],
+  classList?: string[];
   title?: string;
 };
 
-export const MainLayout = ({ classList: providedClassList, title, children }: PropsWithChildren<MainProps>) => {
-  const defaultClassList = [styles['main'], defaultFont.className];
-  const classList = providedClassList ? [...providedClassList, ...defaultClassList] : defaultClassList;
+export const MainLayout = ({
+  classList: providedClassList,
+  title,
+  children
+}: PropsWithChildren<MainProps>) => {
+  const defaultClassList = [styles["main"], defaultFont.className];
+  const classList = providedClassList
+    ? [...providedClassList, ...defaultClassList]
+    : defaultClassList;
 
   return (
     <>
@@ -21,6 +27,8 @@ export const MainLayout = ({ classList: providedClassList, title, children }: Pr
       <main className={classList.join(" ")}>
         <Navigation />
         {children}
-      </main>;
-    </>);
+      </main>
+      ;
+    </>
+  );
 };

@@ -10,7 +10,7 @@ export const loginAction = async (
 ) => {
   const result = await commonApiFetch<ApiStatusMessage>("login", {
     method: "POST",
-    body: JSON.stringify(userData),
+    body: JSON.stringify(userData)
   });
 
   await awaitCallbackIfNeeded(mutate);

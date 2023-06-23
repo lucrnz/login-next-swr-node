@@ -32,7 +32,7 @@ export function authenticate(
     if (!user) {
       return res.status(StatusCode.ClientErrorUnauthorized).send({
         success: false,
-        message: "Authentication failed",
+        message: "Authentication failed"
       } as ApiStatusMessage);
     }
 

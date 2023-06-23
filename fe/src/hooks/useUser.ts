@@ -6,7 +6,7 @@ export const useUser = () => {
   const {
     data: user,
     mutate,
-    error: gotError,
+    error: gotError
   } = useSWR("me", getApiFetcher<User>());
 
   const error = gotError ? (gotError as string) : "";
@@ -20,6 +20,6 @@ export const useUser = () => {
     loading: !user && !error,
     loggedOut: !user && errorLoggedOut,
     user,
-    mutate,
+    mutate
   };
 };

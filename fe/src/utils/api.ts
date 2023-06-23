@@ -7,8 +7,8 @@ export const commonApiFetch = async <T>(
   const defaultConfig = {
     credentials: "include",
     headers: {
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json"
+    }
   } as RequestInit;
 
   const response = await fetch(
@@ -16,7 +16,7 @@ export const commonApiFetch = async <T>(
     fetchConfig
       ? {
           ...fetchConfig,
-          ...defaultConfig,
+          ...defaultConfig
         }
       : defaultConfig
   );
