@@ -20,7 +20,7 @@ Note: **Nix with direnv users:** Just by doing `direnv allow` in this directory 
 
 ```sh
 npm i
-npm run all
+npm start
 ```
 
 ## Copying
