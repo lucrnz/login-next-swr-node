@@ -3,18 +3,22 @@ import { getApiFetcher } from "@/utils/api";
 import { User } from "@/types/User";
 
 export const useUser = () => {
-  const {
-    data: user,
-    mutate,
-    error: gotError
-  } = useSWR("me", getApiFetcher<User>());
+  const userFetcher = getApiFetcher<User>();
 
-  const error = gotError ? (gotError as string) : "";
+  const { data: user, mutate, error: gotError } = useSWR("me", userFetcher);
 
-  const errorLoggedOut =
-    error.length > 0 &&
-    (error.toLowerCase().includes("authentication required") ||
-      error.toLowerCase().includes("authentication failed"));
+  const error = gotError ? (gotError as Error) : null;
+
+  let errorLoggedOut = false;
+
+  if (
+    error &&
+    error.message &&
+    (error.message.toLowerCase().includes("authentication required") ||
+      error.message.toLowerCase().includes("authentication failed"))
+  ) {
+    errorLoggedOut = true;
+  }
 
   return {
     loading: !user && !error,
