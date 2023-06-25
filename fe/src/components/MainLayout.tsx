@@ -1,34 +1,38 @@
 import { PropsWithChildren } from "react";
 import { defaultFont, APP_NAME } from "@/config";
-import Navigation from "./Navigation";
+import DefaultNavigation from "./Navigation";
 import Head from "next/head";
 import styles from "./MainLayout.module.css";
+import { useUser } from "@/hooks/useUser";
 
-type MainProps = {
+type MainProps = PropsWithChildren<{
   classList?: string[];
   title?: string;
-};
+}>;
 
 export const MainLayout = ({
   classList: providedClassList,
   title,
   children
-}: PropsWithChildren<MainProps>) => {
+}: MainProps) => {
   const defaultClassList = [styles["main"], defaultFont.className];
   const classList = providedClassList
     ? [...providedClassList, ...defaultClassList]
     : defaultClassList;
 
+  const { loggedOut } = useUser();
+
   return (
     <>
-      <Head>
-        <title>{title ? `${title} - ${APP_NAME}` : APP_NAME}</title>
-      </Head>
+      {title && (
+        <Head>
+          <title>{`${title} - ${APP_NAME}`}</title>
+        </Head>
+      )}
       <main className={classList.join(" ")}>
-        <Navigation />
+        <DefaultNavigation loggedOut={loggedOut} />
         {children}
       </main>
-      ;
     </>
   );
 };
