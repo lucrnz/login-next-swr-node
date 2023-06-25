@@ -33,7 +33,7 @@ export const getApiFetcher =
     const data = await commonApiFetch<ApiResponseOrError<T>>(url, fetchConfig);
 
     if (!data.success) {
-      throw (data as ApiStatusMessage).message;
+      throw new Error((data as ApiStatusMessage).message);
     }
 
     return (data as ApiResponse<T>).data;
