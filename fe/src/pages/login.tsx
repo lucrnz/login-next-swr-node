@@ -1,10 +1,13 @@
 import styles from "./login.module.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/User";
 import { MainLayout } from "@/components/MainLayout";
 import { loginAction } from "@/utils/loginAction";
 import { useSWRConfig } from "swr";
+import { useRouter } from "next/router";
+import { defaultPageLoggedIn } from "@/config";
+import { useUser } from "@/hooks/useUser";
 
 enum Field {
   Password,
@@ -24,12 +27,22 @@ const validations: {
   }
 };
 
-export default () => {
+export default function LoginPage() {
+  const router = useRouter();
   const { mutate } = useSWRConfig();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [validationErrors, setValidationErrors] = useState<[Field, string][]>(
     []
   );
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const { loggedOut } = useUser();
+
+  useEffect(() => {
+    if (!loggedOut) {
+      console.log("Login success, redirecting...");
+      router.replace(defaultPageLoggedIn);
+    }
+  }, [loggedOut]);
 
   function validateInputs() {
     const emailInput: HTMLInputElement =
@@ -57,8 +70,9 @@ export default () => {
     return { errors, values };
   }
 
-  const formSubmitEventHandler = async (event: FormEvent<HTMLFormElement>) => {
+  async function formSubmitEventHandler(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoginError(null);
 
     if (!formRef || !formRef.current || validationErrors.length > 0) {
       return;
@@ -74,8 +88,13 @@ export default () => {
       email: values[Field.Email],
       password: values[Field.Password]
     } as Partial<UserWithPassword>;
-    await loginAction(mutate.bind(null, null), userData);
-  };
+
+    const loginResult = await loginAction(userData);
+
+    if (!loginResult.success) {
+      setLoginError(loginResult.message);
+    }
+  }
 
   return (
     <MainLayout title="Login">
@@ -117,8 +136,11 @@ export default () => {
               </p>
             ))}
         </div>
+        {loginError !== null && (
+          <p className={styles["text-error"]}>{loginError}</p>
+        )}
         <input type="submit" value="Login" />
       </form>
     </MainLayout>
   );
-};
+}
