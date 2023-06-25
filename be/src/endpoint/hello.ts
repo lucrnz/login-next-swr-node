@@ -2,7 +2,7 @@ import { Response } from "express";
 import { ApiStatusMessage } from "../types/Api.js";
 import { AuthenticatedRequest } from "../types/AuthenticatedRequest.js";
 
-export const fooEndpointHandler = (
+export const helloEndpointHandler = (
   req: AuthenticatedRequest,
   res: Response
 ) => {

@@ -1,3 +1,7 @@
+# Data directory (This acts as a replacement of database)
+/data/*
+!/data/.gitkeep
+
 # Logs
 logs
 *.log
