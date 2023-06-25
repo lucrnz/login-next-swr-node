@@ -1,16 +1,18 @@
 import { MainLayout } from "@/components/MainLayout";
+import { defaultPageLoggedIn } from "@/config";
 import { useUser } from "@/hooks/useUser";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export default () => {
-  const { user, loading, loggedOut } = useUser();
+export default function IndexPage() {
+  const router = useRouter();
+  const { loading, loggedOut } = useUser();
 
   useEffect(() => {
-    if (user && !loggedOut) {
-      Router.replace("/notes");
+    if (!loggedOut) {
+      router.replace(defaultPageLoggedIn);
     }
-  }, [user, loggedOut]);
+  }, [loggedOut]);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -22,4 +24,4 @@ export default () => {
       <p>This is main page that anyone can read.</p>
     </MainLayout>
   );
-};
+}
