@@ -1,4 +1,4 @@
-# http-only practice
+# login-next-swr-node
 
 A full stack application to practice authenticantion using JWT tokens and setting an http-only cookie.
 
