@@ -1,15 +1,21 @@
 import { useUser } from "@/hooks/useUser";
-import Router from "next/router";
 import { MainLayout } from "@/components/MainLayout";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-export default () => {
-  const { loading, user, mutate } = useUser();
+export default function NotesPage() {
+  const router = useRouter();
+  const { user, loggedOut } = useUser();
+
+  useEffect(() => {
+    if (loggedOut) {
+      router.replace("/login");
+    }
+  }, [loggedOut]);
 
   let mainContent = <p>Loading...</p>;
 
-  console.log("user", user);
-
-  if (!loading && user) {
+  if (!loggedOut && user) {
     mainContent = (
       <>
         <h1>Notes</h1>
@@ -18,10 +24,9 @@ export default () => {
     );
   }
 
-  if (!loading && !user) {
+  if (loggedOut) {
     mainContent = <p>Please log in to visit this page.</p>;
-    Router.replace("/login");
   }
 
   return <MainLayout title="My Notes">{mainContent}</MainLayout>;
-};
+}
