@@ -6,17 +6,13 @@ import { useEffect } from "react";
 
 export default function IndexPage() {
   const router = useRouter();
-  const { loading, loggedOut } = useUser();
+  const { loggedOut } = useUser();
 
   useEffect(() => {
     if (!loggedOut) {
       router.replace(defaultPageLoggedIn);
     }
   }, [loggedOut]);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <MainLayout>
