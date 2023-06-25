@@ -29,17 +29,17 @@ const validations: {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { mutate } = useSWRConfig();
   const formRef = useRef<HTMLFormElement | null>(null);
   const [validationErrors, setValidationErrors] = useState<[Field, string][]>(
     []
   );
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const { loggedOut } = useUser();
 
   useEffect(() => {
     if (!loggedOut) {
-      console.log("Login success, redirecting...");
+      setIsRedirecting(true);
       router.replace(defaultPageLoggedIn);
     }
   }, [loggedOut]);
@@ -96,9 +96,10 @@ export default function LoginPage() {
     }
   }
 
-  return (
-    <MainLayout title="Login">
-      <span className={styles["title"]}>Welcome - Login</span>
+  let formContents = <p>You are being redirected, please wait...</p>;
+
+  if (!isRedirecting) {
+    formContents = (
       <form
         className={styles["form"]}
         onSubmit={formSubmitEventHandler}
@@ -141,6 +142,13 @@ export default function LoginPage() {
         )}
         <input type="submit" value="Login" />
       </form>
+    );
+  }
+
+  return (
+    <MainLayout title="Login">
+      <span className={styles["title"]}>Welcome - Login</span>
+      {formContents}
     </MainLayout>
   );
 }
