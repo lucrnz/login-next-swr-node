@@ -1,5 +1,6 @@
-import { ApiResponseOrError, ApiStatusMessage } from "@/types/Api";
+import { ApiResponseOrError } from "@/types/Api";
 import { User } from "@/types/User";
+import { fetchBackend } from "@/utils/fetchBackend";
 import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
 
@@ -18,14 +19,13 @@ export default async function handler(
   }
 
   try {
-    const apiResponse = await fetch("http://localhost:3002/me", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: req.cookies["token"] ? `token=${req.cookies["token"]}` : ""
+    const apiResponse = await fetchBackend(
+      "me",
+      {
+        method: "GET"
       },
-      credentials: "include"
-    });
+      req.cookies
+    );
 
     const data = (await apiResponse.json()) as MeApiResponse;
     res.status(apiResponse.status).json(data);

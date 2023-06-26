@@ -1,4 +1,5 @@
 import { ApiStatusMessage } from "@/types/Api";
+import { fetchBackend } from "@/utils/fetchBackend";
 import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
 
@@ -13,14 +14,13 @@ export default async function handler(
   }
 
   try {
-    const apiResponse = await fetch("http://localhost:3002/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: req.cookies["token"] ? `token=${req.cookies["token"]}` : ""
+    const apiResponse = await fetchBackend(
+      "logout",
+      {
+        method: "POST"
       },
-      credentials: "include"
-    });
+      req.cookies
+    );
 
     if (apiResponse.ok) {
       res.setHeader(

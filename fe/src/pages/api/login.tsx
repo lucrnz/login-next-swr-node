@@ -1,5 +1,6 @@
 import { ApiStatusMessage } from "@/types/Api";
 import { UserWithPassword } from "@/types/User";
+import { fetchBackend } from "@/utils/fetchBackend";
 import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
 
@@ -14,13 +15,9 @@ export default async function handler(
   }
 
   try {
-    const apiResponse = await fetch("http://localhost:3002/login", {
+    const apiResponse = await fetchBackend("login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ ...(req.body as Partial<UserWithPassword>) }),
-      credentials: "include"
+      body: JSON.stringify({ ...(req.body as Partial<UserWithPassword>) })
     });
 
     if (apiResponse.ok) {
