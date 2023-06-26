@@ -12,15 +12,26 @@ And the front-end team will opt to use Next js to be able to use SSR and other f
 
 In this example, our backend team (an Express api) is setting a cookie, and we (the front-end team) have to use that api via our proxy (`pages/api/*`) and respect the user cookies.
 
-## Development
-
-You need [Node.js](https://nodejs.org/en) latest LTS version.
+## Prerequisites
 
 Note: **Nix with direnv users:** Just by doing `direnv allow` in this directory the setup will be done and you can skip any install.
 
+You need [Node.js](https://nodejs.org/en) latest LTS version.
+
+You need the [pnpm] package manager.
+
+You can `enable` it via corepack:
+
 ```sh
-npm i
-npm start
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+## Development
+
+```sh
+pnpm install
+pnpm start
 ```
 
 ## Copying
