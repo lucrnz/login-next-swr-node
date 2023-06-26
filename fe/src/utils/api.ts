@@ -1,9 +1,13 @@
-import { ApiResponse, ApiResponseOrError, ApiStatusMessage } from "@/types/Api";
+import {
+  ApiResponse,
+  ApiResponseOrMessage,
+  ApiStatusMessage
+} from "@/types/Api";
 
-export const commonApiFetch = async <T>(
+export async function commonApiFetch<T>(
   url: string,
   fetchConfig: RequestInit | null = null
-) => {
+) {
   const defaultConfig = {
     credentials: "include",
     headers: {
@@ -25,16 +29,21 @@ export const commonApiFetch = async <T>(
 
   console.log("commonApiFetch: result", result);
   return result;
-};
+}
 
-export const getApiFetcher =
-  <T>(fetchConfig: RequestInit | null = null) =>
-  async (url: string) => {
-    const data = await commonApiFetch<ApiResponseOrError<T>>(url, fetchConfig);
+export function getApiFetcher<T>(fetchConfig: RequestInit | null = null) {
+  async function apiFetcher(url: string) {
+    const data = await commonApiFetch<ApiResponseOrMessage<T>>(
+      url,
+      fetchConfig
+    );
 
     if (!data.success) {
-      throw new Error((data as ApiStatusMessage).message);
+      throw new Error((data as ApiResponse<ApiStatusMessage>).data.message);
     }
 
     return (data as ApiResponse<T>).data;
-  };
+  }
+
+  return apiFetcher;
+}

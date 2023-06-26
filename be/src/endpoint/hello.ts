@@ -1,15 +1,9 @@
 import { Response } from "express";
-import { ApiStatusMessage } from "../types/Api.js";
 import { AuthenticatedRequest } from "../types/AuthenticatedRequest.js";
+import { newStatusMessage } from "../util/newStatusMessage.js";
 
-export const helloEndpointHandler = (
-  req: AuthenticatedRequest,
-  res: Response
-) => {
+export function helloEndpointHandler(req: AuthenticatedRequest, res: Response) {
   const { name } = req.user!;
 
-  res.send({
-    success: true,
-    message: `Hello, ${name}!`
-  } as ApiStatusMessage);
-};
+  res.send(newStatusMessage(true, `Hello, ${name}!`));
+}

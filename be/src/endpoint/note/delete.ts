@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { ApiResponse, ApiStatusMessage } from "../../types/Api.js";
 import { AuthenticatedRequest } from "../../types/AuthenticatedRequest.js";
 import { Note } from "../../types/Note.js";
 import {
@@ -7,6 +6,7 @@ import {
   deleteNoteFileNotExistsErrorMessage
 } from "../../lib/note.js";
 import { StatusCode } from "status-code-enum";
+import { newStatusMessage } from "../../util/newStatusMessage.js";
 
 export async function deleteNoteEndpointHandler(
   req: AuthenticatedRequest,
@@ -18,11 +18,9 @@ export async function deleteNoteEndpointHandler(
   const validNoteId = typeof noteId === "string" && noteId.length > 0;
 
   if (!validNoteId) {
-    res.status(StatusCode.ClientErrorBadRequest).json({
-      success: false,
-      message: "Bad request"
-    } as ApiStatusMessage);
-    return;
+    return res
+      .status(StatusCode.ClientErrorBadRequest)
+      .json(newStatusMessage(false, "Bad request"));
   }
 
   let note: Note | null = null;
@@ -36,22 +34,15 @@ export async function deleteNoteEndpointHandler(
       err instanceof Error &&
       (err as Error).message === deleteNoteFileNotExistsErrorMessage
     ) {
-      res.status(StatusCode.ClientErrorNotFound).json({
-        success: false,
-        message: "Not found"
-      } as ApiStatusMessage);
-      return;
+      return res
+        .status(StatusCode.ClientErrorNotFound)
+        .json(newStatusMessage(false, "Not found"));
     }
 
-    res.status(StatusCode.ServerErrorInternal).json({
-      success: false,
-      message: "Internal server error"
-    } as ApiStatusMessage);
-    return;
+    return res
+      .status(StatusCode.ServerErrorInternal)
+      .json(newStatusMessage(false, "Internal server error"));
   }
 
-  res.status(StatusCode.SuccessOK).json({
-    success: true,
-    data: null
-  } as ApiResponse<null>);
+  res.status(StatusCode.SuccessOK).json(newStatusMessage(true, "Note deleted"));
 }

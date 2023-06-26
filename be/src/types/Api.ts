@@ -6,11 +6,12 @@ export type ApiResponse<T> = {
 };
 
 export type ApiStatusMessage = {
-  success: boolean;
   message: string;
 };
 
-export type ApiResponseOrError<T> = ApiResponse<T> | ApiStatusMessage;
+export type ApiResponseOrMessage<T> =
+  | ApiResponse<T>
+  | ApiResponse<ApiStatusMessage>;
 
 export type ApiBodyPostNote = {
   note: Note;

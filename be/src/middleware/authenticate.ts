@@ -4,7 +4,7 @@ import { StatusCode } from "status-code-enum";
 import jwt from "jsonwebtoken";
 import users from "../data/users.js";
 import { UserWithPassword } from "../types/User.js";
-import { ApiStatusMessage } from "../types/Api.js";
+import { ApiResponse, ApiStatusMessage } from "../types/Api.js";
 import { EnvironmentVariable, getEnv } from "../env.js";
 
 export function authenticate(
@@ -17,9 +17,10 @@ export function authenticate(
   const token: string | undefined = req.cookies.token;
 
   if (!token || token === "deleted") {
-    return res
-      .status(StatusCode.ClientErrorUnauthorized)
-      .send({ success: false, message: "Authentication required" });
+    return res.status(StatusCode.ClientErrorUnauthorized).send({
+      success: false,
+      data: { message: "Authentication required" }
+    } as ApiResponse<ApiStatusMessage>);
   }
 
   try {
@@ -32,8 +33,8 @@ export function authenticate(
     if (!user) {
       return res.status(StatusCode.ClientErrorUnauthorized).send({
         success: false,
-        message: "Authentication failed"
-      } as ApiStatusMessage);
+        data: { message: "Authentication failed" }
+      } as ApiResponse<ApiStatusMessage>);
     }
 
     // User is authenticated, add user object to request and call next middleware
@@ -42,8 +43,9 @@ export function authenticate(
     next();
   } catch (err) {
     console.error("[node api]", err);
-    return res
-      .status(StatusCode.ServerErrorInternal)
-      .send({ success: false, message: "Internal server error" });
+    return res.status(StatusCode.ServerErrorInternal).send({
+      success: false,
+      data: { message: "Internal server error" }
+    } as ApiResponse<ApiStatusMessage>);
   }
 }

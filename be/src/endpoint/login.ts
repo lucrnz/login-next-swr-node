@@ -1,13 +1,13 @@
 import { StatusCode } from "status-code-enum";
-import { ApiStatusMessage } from "../types/Api.js";
 import { UserWithPassword } from "../types/User.js";
 import type { CookieOptions, Request, Response } from "express";
 
 import users from "../data/users.js";
 import jwt from "jsonwebtoken";
 import { EnvironmentVariable, getEnv } from "../env.js";
+import { newStatusMessage } from "../util/newStatusMessage.js";
 
-export const loginEndpointHandler = (req: Request, res: Response) => {
+export function loginEndpointHandler(req: Request, res: Response) {
   const secret = getEnv(EnvironmentVariable.JwtSecret) as string;
 
   const { email, password } = req.body as Partial<UserWithPassword>;
@@ -15,7 +15,7 @@ export const loginEndpointHandler = (req: Request, res: Response) => {
   if (!email || !password) {
     return res
       .status(StatusCode.ClientErrorBadRequest)
-      .send({ success: false, message: "Bad Request" } as ApiStatusMessage);
+      .send(newStatusMessage(false, "Bad Request"));
   }
 
   const user = users.find(
@@ -23,10 +23,9 @@ export const loginEndpointHandler = (req: Request, res: Response) => {
   );
 
   if (!user) {
-    return res.status(StatusCode.ClientErrorForbidden).send({
-      success: false,
-      message: "Invalid email or password"
-    } as ApiStatusMessage);
+    return res
+      .status(StatusCode.ClientErrorForbidden)
+      .send(newStatusMessage(false, "Invalid email or password"));
   }
 
   const token = jwt.sign({ id: user.id }, secret, { expiresIn: "1h" });
@@ -44,5 +43,5 @@ export const loginEndpointHandler = (req: Request, res: Response) => {
 
   res.cookie("token", token, cookieConfig);
 
-  res.send({ success: true, message: "Logged in" } as ApiStatusMessage);
-};
+  res.send(newStatusMessage(true, "Logged in"));
+}

@@ -10,6 +10,7 @@ import { StatusCode } from "status-code-enum";
 import { v4 as uuidv4 } from "uuid";
 import { writeNote } from "../../lib/note.js";
 import { Note } from "../../types/Note.js";
+import { newStatusMessage } from "../../util/newStatusMessage.js";
 
 export async function postNoteEndpointHandler(
   req: AuthenticatedRequest,
@@ -29,11 +30,9 @@ export async function postNoteEndpointHandler(
     await writeNote(user.id, note);
   } catch (err) {
     console.error(err);
-    res.status(StatusCode.ServerErrorInternal).json({
-      success: false,
-      message: "Internal server error"
-    } as ApiStatusMessage);
-    return;
+    return res
+      .status(StatusCode.ServerErrorInternal)
+      .json(newStatusMessage(false, "Internal server error"));
   }
 
   res.status(StatusCode.SuccessCreated).json({

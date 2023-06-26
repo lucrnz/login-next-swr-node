@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from "../../../types/AuthenticatedRequest.js";
 import { StatusCode } from "status-code-enum";
 import { listNotesForUser } from "../../../lib/note.js";
 import { Note } from "../../../types/Note.js";
+import { newStatusMessage } from "../../../util/newStatusMessage.js";
 
 export async function getNoteListEndpointHandler(
   req: AuthenticatedRequest,
@@ -21,11 +22,9 @@ export async function getNoteListEndpointHandler(
     }
   } catch (err) {
     console.error(err);
-    res.status(StatusCode.ServerErrorInternal).json({
-      success: false,
-      message: "Internal server error"
-    } as ApiStatusMessage);
-    return;
+    return res
+      .status(StatusCode.ServerErrorInternal)
+      .json(newStatusMessage(false, "Internal server error"));
   }
 
   res.status(StatusCode.SuccessOK).json({
