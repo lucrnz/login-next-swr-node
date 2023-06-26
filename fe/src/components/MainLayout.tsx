@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { defaultFont, APP_NAME } from "@/config";
 import DefaultNavigation from "./Navigation";
 import Head from "next/head";
@@ -21,6 +21,10 @@ export const MainLayout = ({
     : defaultClassList;
 
   const { loggedOut } = useUser();
+
+  useEffect(() => {
+    console.log("loggedOut: ", loggedOut ? "true" : "false");
+  }, [loggedOut]);
 
   return (
     <>

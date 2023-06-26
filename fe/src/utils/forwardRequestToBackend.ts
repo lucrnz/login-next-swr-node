@@ -6,6 +6,7 @@ import {
 import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
 import { fetchBackend } from "./fetchBackend";
+import { CustomFetchResult } from "./customFetch";
 
 type ForwardRequestToBackendOptions<T> = {
   req: NextApiRequest;
@@ -13,10 +14,11 @@ type ForwardRequestToBackendOptions<T> = {
   validMethod: NextApiRequest["method"] | NextApiRequest["method"][];
   url: string;
   cacheControl?: string;
+  params?: { [key: string]: string };
   onResponseFetch?: (
     req: NextApiRequest,
     res: NextApiResponse<ApiResponseOrMessage<T>>,
-    apiResponse: Response
+    apiResponse: CustomFetchResult<ApiResponseOrMessage<T>>
   ) => Promise<unknown>;
 };
 
@@ -26,6 +28,7 @@ export async function forwardRequestToBackend<T>({
   validMethod,
   url,
   cacheControl,
+  params,
   onResponseFetch
 }: ForwardRequestToBackendOptions<T>) {
   const isMethodValid = Array.isArray(validMethod)
@@ -39,27 +42,28 @@ export async function forwardRequestToBackend<T>({
   }
 
   try {
-    const apiResponse = await fetchBackend({
+    const apiResponse = await fetchBackend<
+      ApiResponse<T> | ApiResponse<ApiStatusMessage>
+    >({
       url: url,
       method: req.method,
       body:
         req.method !== "GET" && req.method !== "HEAD" ? req.body : undefined,
-      cookies: req.cookies
+      cookies: req.cookies,
+      params
     });
 
     if (onResponseFetch) {
       await onResponseFetch(req, res, apiResponse);
     }
 
-    const data = (await apiResponse.json()) as
-      | ApiResponse<T>
-      | ApiResponse<ApiStatusMessage>;
+    const { data, status } = apiResponse;
 
     if (cacheControl) {
       res.setHeader("cache-control", cacheControl);
     }
 
-    res.status(apiResponse.status).json(data);
+    res.status(status).json(data);
   } catch (e) {
     console.error(e);
 

@@ -7,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponseOrMessage<Note["id"][]>>
 ) {
-  return forwardRequestToBackend({
+  return await forwardRequestToBackend({
     req,
     res,
     validMethod: "GET",

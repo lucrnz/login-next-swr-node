@@ -1,10 +1,10 @@
-import { commonApiFetch } from "./api";
-import { ApiStatusMessage } from "@/types/Api";
+import { fetchApi } from "./api";
 import { UserWithPassword } from "@/types/User";
 
 export async function loginAction(userData: Partial<UserWithPassword>) {
-  return await commonApiFetch<ApiStatusMessage>("login", {
+  return await fetchApi({
+    url: "login",
     method: "POST",
-    body: JSON.stringify(userData)
+    body: userData
   });
 }

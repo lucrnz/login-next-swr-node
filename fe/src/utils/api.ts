@@ -3,40 +3,38 @@ import {
   ApiResponseOrMessage,
   ApiStatusMessage
 } from "@/types/Api";
+import { CustomFetchOptions, customFetch } from "./customFetch";
 
-export async function commonApiFetch<T>(
-  url: string,
-  fetchConfig: RequestInit | null = null
-) {
-  const defaultConfig = {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  } as RequestInit;
-
-  const response = await fetch(
-    `/api/${url}`,
-    fetchConfig
-      ? {
-          ...fetchConfig,
-          ...defaultConfig
-        }
-      : defaultConfig
-  );
-
-  const result: T = await response.json();
-
-  console.log("commonApiFetch: result", result);
-  return result;
+export async function fetchApi<T>({
+  url,
+  config,
+  cookies,
+  params,
+  body,
+  method
+}: CustomFetchOptions<T>) {
+  return await customFetch({
+    url: `/api/${url}`,
+    body,
+    config,
+    cookies,
+    method,
+    params
+  });
 }
 
-export function getApiFetcher<T>(fetchConfig: RequestInit | null = null) {
+type GetApiFetcherOptions<T> = Omit<CustomFetchOptions<T>, "url">;
+
+export function getApiFetcher<T>(
+  options: GetApiFetcherOptions<ApiResponseOrMessage<T>> | null = null
+) {
   async function apiFetcher(url: string) {
-    const data = await commonApiFetch<ApiResponseOrMessage<T>>(
+    const { data } = await fetchApi<ApiResponseOrMessage<T>>({
       url,
-      fetchConfig
-    );
+      ...options
+    });
+
+    console.log("getApiFetcher data", data);
 
     if (!data.success) {
       throw new Error((data as ApiResponse<ApiStatusMessage>).data.message);
