@@ -1,25 +1,21 @@
 import { useUser } from "@/hooks/User/useUser";
 import { useNoteList } from "@/hooks/Notes/useNoteList";
-import { Note } from "@/types/Note";
 import { useNote } from "@/hooks/Notes/useNote";
+import { Note } from "@/types/Note";
+import { DisplayNote } from "../DisplayNote/DisplayNote";
 
 type NoteProps = {
   noteId: Note["id"];
 };
 
-function Note({ noteId }: NoteProps) {
+function FetchNote({ noteId }: NoteProps) {
   const { note, loading } = useNote(noteId);
 
   if (loading || !note) {
     return <p>Loading...</p>;
   }
 
-  return (
-    <div>
-      <h2>{note.title}</h2>
-      <p>{note.contents}</p>
-    </div>
-  );
+  return <DisplayNote note={note} addLink={true} />;
 }
 
 export function Notes() {
@@ -42,7 +38,7 @@ export function Notes() {
       {noteList.length > 0 ? (
         noteList.map((noteId, index) => (
           <li key={index}>
-            <Note key={index} noteId={noteId} />
+            <FetchNote key={index} noteId={noteId} />
           </li>
         ))
       ) : (
