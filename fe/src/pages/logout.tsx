@@ -1,5 +1,5 @@
-import { MainLayout } from "@/components/MainLayout";
-import { useUser } from "@/hooks/useUser";
+import { MainLayout } from "@/components/MainLayout/MainLayout";
+import { useUser } from "@/hooks/User/useUser";
 import { logoutAction } from "@/utils/logoutAction";
 import { useRouter } from "next/router";
 import { useEffect } from "react";

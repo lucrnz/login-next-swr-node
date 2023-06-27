@@ -1,9 +1,9 @@
 import { PropsWithChildren, useEffect } from "react";
 import { defaultFont, APP_NAME } from "@/config";
-import DefaultNavigation from "./Navigation";
+import DefaultNavigation from "@/components/Navigation/Navigation";
 import Head from "next/head";
 import styles from "./MainLayout.module.css";
-import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/User/useUser";
 
 type MainProps = PropsWithChildren<{
   classList?: string[];

@@ -1,6 +1,6 @@
-import { MainLayout } from "@/components/MainLayout";
+import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { defaultPageLoggedIn } from "@/config";
-import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/User/useUser";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 

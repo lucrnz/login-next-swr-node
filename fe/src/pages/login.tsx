@@ -2,12 +2,11 @@ import styles from "./login.module.css";
 import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/User";
-import { MainLayout } from "@/components/MainLayout";
+import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { loginAction } from "@/utils/loginAction";
-import { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { defaultPageLoggedIn } from "@/config";
-import { useUser } from "@/hooks/useUser";
+import { useUser } from "@/hooks/User/useUser";
 
 enum Field {
   Password,
@@ -92,7 +91,7 @@ export default function LoginPage() {
     const loginResult = await loginAction(userData);
 
     if (!loginResult.success) {
-      setLoginError(loginResult.message);
+      setLoginError(loginResult.data.message);
     }
   }
 
