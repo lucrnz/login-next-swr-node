@@ -2,8 +2,10 @@ import { fetchApi } from "./api";
 import { ApiStatusMessage } from "@/types/Api";
 
 export async function logoutAction() {
-  return await fetchApi<ApiStatusMessage>({
+  const { data } = await fetchApi<ApiStatusMessage, never>({
     url: "logout",
     method: "POST"
   });
+
+  return data;
 }

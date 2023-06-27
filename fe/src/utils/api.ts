@@ -5,15 +5,15 @@ import {
 } from "@/types/Api";
 import { CustomFetchOptions, customFetch } from "./customFetch";
 
-export async function fetchApi<T>({
+export async function fetchApi<ResultType, RequestBodyType>({
   url,
   config,
   cookies,
   params,
   body,
   method
-}: CustomFetchOptions<T>) {
-  return await customFetch({
+}: CustomFetchOptions<RequestBodyType>) {
+  return await customFetch<ApiResponseOrMessage<ResultType>, RequestBodyType>({
     url: `/api/${url}`,
     body,
     config,
@@ -25,11 +25,11 @@ export async function fetchApi<T>({
 
 type GetApiFetcherOptions<T> = Omit<CustomFetchOptions<T>, "url">;
 
-export function getApiFetcher<T>(
-  options: GetApiFetcherOptions<ApiResponseOrMessage<T>> | null = null
+export function getApiFetcher<ResultType, RequestBodyType>(
+  options: GetApiFetcherOptions<RequestBodyType> | null = null
 ) {
   async function apiFetcher(url: string) {
-    const { data } = await fetchApi<ApiResponseOrMessage<T>>({
+    const { data } = await fetchApi<ResultType, RequestBodyType>({
       url,
       ...options
     });
@@ -40,7 +40,7 @@ export function getApiFetcher<T>(
       throw new Error((data as ApiResponse<ApiStatusMessage>).data.message);
     }
 
-    return (data as ApiResponse<T>).data;
+    return (data as ApiResponse<ResultType>).data;
   }
 
   return apiFetcher;

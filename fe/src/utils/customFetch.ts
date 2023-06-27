@@ -12,30 +12,30 @@ function isAbsoluteURL(url: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/.test(url);
 }
 
-export type CustomFetchOptions<T> = {
+export type CustomFetchOptions<RequestBodyType> = {
   url: URL | string;
   config?: RequestInit;
   cookies?: NextApiRequest["cookies"];
   params?: { [key: string]: string };
-  body?: T;
+  body?: RequestBodyType;
   method?: NextApiRequest["method"];
 };
 
-export type CustomFetchResult<T> = {
+export type CustomFetchResult<ResultType> = {
   status: Response["status"];
   headers: Response["headers"];
   ok: Response["ok"];
-  data: T;
+  data: ResultType;
 };
 
-export async function customFetch<T>({
+export async function customFetch<ResultType, RequestBodyType>({
   url,
   config,
   cookies,
   params,
   body,
   method
-}: CustomFetchOptions<T>) {
+}: CustomFetchOptions<RequestBodyType>) {
   const urlObj =
     url instanceof URL || isAbsoluteURL(url)
       ? new URL(url.toString())
@@ -85,12 +85,12 @@ export async function customFetch<T>({
   const fetchResponse = await fetch(urlObj, requestInit);
   const { headers, ok, status } = fetchResponse;
 
-  const data = (await fetchResponse.json()) as T;
+  const data = (await fetchResponse.json()) as ResultType;
 
   return {
     headers,
     ok,
     status,
     data
-  } as CustomFetchResult<T>;
+  } as CustomFetchResult<ResultType>;
 }
