@@ -1,0 +1,17 @@
+.edit-btn > svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-edit-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  border: none;
+}

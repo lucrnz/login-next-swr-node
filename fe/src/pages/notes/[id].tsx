@@ -1,4 +1,4 @@
-import { DisplayNote } from "@/components/DisplayNote/DisplayNote";
+import { EditNote } from "@/components/DisplayNote/DisplayNote";
 import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { useNote } from "@/hooks/Notes/useNote";
 import { useUser } from "@/hooks/User/useUser";
@@ -43,7 +43,13 @@ export default function NoteIdPage() {
 
   return (
     <MainLayout title={note.title}>
-      <DisplayNote note={note} />
+      <EditNote
+        note={note}
+        onSave={(note) => {
+          console.log("To save", note);
+        }}
+        isLoading={false}
+      />
     </MainLayout>
   );
 }
