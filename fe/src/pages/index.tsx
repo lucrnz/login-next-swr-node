@@ -3,6 +3,7 @@ import { defaultPageLoggedIn } from "@/config";
 import { useUser } from "@/hooks/User/useUser";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { Card } from "@/components/Card/Card";
 
 export default function IndexPage() {
   const router = useRouter();
@@ -16,8 +17,10 @@ export default function IndexPage() {
 
   return (
     <MainLayout>
-      <h1>Login example</h1>
-      <p>This is main page that anyone can read.</p>
+      <Card>
+        <h1>Login example</h1>
+        <p>This is main page that anyone can read.</p>
+      </Card>
     </MainLayout>
   );
 }

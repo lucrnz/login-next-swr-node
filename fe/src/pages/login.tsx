@@ -1,4 +1,4 @@
-import styles from "./login.module.css";
+import styles from "@/styles/login.module.css";
 import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/User";
@@ -7,6 +7,7 @@ import { loginAction } from "@/utils/loginAction";
 import { useRouter } from "next/router";
 import { defaultPageLoggedIn } from "@/config";
 import { useUser } from "@/hooks/User/useUser";
+import { Card } from "@/components/Card/Card";
 
 enum Field {
   Password,
@@ -146,8 +147,10 @@ export default function LoginPage() {
 
   return (
     <MainLayout title="Login">
-      <span className={styles["title"]}>Welcome - Login</span>
-      {formContents}
+      <Card>
+        <span className={styles["title"]}>Welcome - Login</span>
+        {formContents}
+      </Card>
     </MainLayout>
   );
 }

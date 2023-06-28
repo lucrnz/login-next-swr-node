@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect } from "react";
 import { defaultFont, APP_NAME } from "@/config";
-import DefaultNavigation from "@/components/Navigation/Navigation";
+import DefaultHeader from "@/components/Header/Header";
 import Head from "next/head";
 import styles from "./MainLayout.module.css";
 import { useUser } from "@/hooks/User/useUser";
@@ -34,8 +34,8 @@ export const MainLayout = ({
         </Head>
       )}
       <main className={classList.join(" ")}>
-        <DefaultNavigation loggedOut={loggedOut} />
-        {children}
+        <DefaultHeader loggedOut={loggedOut} />
+        <div className={styles["main-container"]}>{children}</div>
       </main>
     </>
   );
