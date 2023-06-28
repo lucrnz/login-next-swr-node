@@ -8,28 +8,22 @@ import { useRouter } from "next/router";
 import { defaultPageLoggedIn } from "@/config";
 import { useUser } from "@/hooks/User/useUser";
 import { Card } from "@/components/Card/Card";
+import { useFormValidation } from "@/hooks/useFormValidation";
 
-// @TODO: Move this validation logic!!
-
-enum Field {
-  Password,
-  Email
-}
-
-type ValidationValue = {
-  validate: (value: string) => Boolean;
-  message: string;
+const Field = {
+  Email: "Email",
+  Password: "Password"
 };
 
-const validations: {
-  [field in Field]: ValidationValue;
-} = {
+const validations = {
   [Field.Email]: {
     validate: (value: string) => value.includes("@") && value.trim() !== "",
+    id: "email",
     message: "Email is invalid"
   },
   [Field.Password]: {
     validate: (value: string) => value.trim() !== "",
+    id: "password",
     message: "Password is empty"
   }
 };
@@ -37,12 +31,16 @@ const validations: {
 export default function LoginPage() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [validationErrors, setValidationErrors] = useState<[Field, string][]>(
-    []
-  );
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const { loggedOut } = useUser();
+
+  const {
+    validateField,
+    validateAllInputs,
+    getValidationErrorsForField,
+    getInputValues
+  } = useFormValidation(validations, formRef);
 
   useEffect(() => {
     if (!loggedOut) {
@@ -51,86 +49,21 @@ export default function LoginPage() {
     }
   }, [loggedOut]);
 
-  function validateInputs() {
-    const emailInput: HTMLInputElement =
-      formRef.current!.querySelector("#email")!;
-    const passwordInput: HTMLInputElement =
-      formRef.current!.querySelector("#password")!;
-
-    const errors: [Field, string][] = [];
-    const values = {
-      [Field.Email]: emailInput.value,
-      [Field.Password]: passwordInput.value
-    };
-
-    for (const validation of Object.entries(validations)) {
-      const [key, validationValue] = validation;
-      const field: Field = +key;
-      const newErrors = validateInput(values[field], validationValue).map(
-        (error) => [field, error] as [Field, string]
-      );
-
-      for (const entry of newErrors) {
-        errors.push(entry);
-      }
-    }
-
-    setValidationErrors((_) => errors);
-    return { errors, values };
-  }
-
-  function validateInput(value: string, validation: ValidationValue) {
-    const errors: string[] = [];
-
-    const { validate, message } = validation;
-
-    if (!validate(value)) {
-      errors.push(message);
-    }
-
-    return errors;
-  }
-
-  function validateField(field: Field, value: string) {
-    const entries = Object.entries(validations);
-
-    const entry = entries.find(
-      ([validationKey, _]) => (+validationKey as Field) === field
-    );
-
-    if (!entry) {
-      return;
-    }
-
-    const [_, validation] = entry;
-
-    const newErrors = validateInput(value, validation).map(
-      (error) => [field, error] as [Field, string]
-    );
-
-    setValidationErrors((errors) => {
-      // Get validation errors from other inputs only
-      const filtered = errors.filter(([key, _]) => (+key as Field) !== field);
-
-      // Add validation errors from this input
-      return [...filtered, ...newErrors];
-    });
-  }
-
   async function formSubmitEventHandler(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoginError(null);
 
-    if (!formRef || !formRef.current || validationErrors.length > 0) {
+    if (!formRef || !formRef.current) {
       return;
     }
 
-    const { errors, values } = validateInputs();
+    const errors = validateAllInputs();
 
     if (errors.length) {
       return;
     }
 
+    const values = getInputValues();
     const userData = {
       email: values[Field.Email],
       password: values[Field.Password]
@@ -158,18 +91,13 @@ export default function LoginPage() {
             id="email"
             type="email"
             className={styles["text-field"]}
-            onBlur={(event) => {
-              const value = event.target.value;
-              validateField(Field.Email, value);
-            }}
+            onBlur={() => validateField(Field.Email)}
           />
-          {validationErrors
-            .filter(([field, _]) => field === Field.Email)
-            .map(([_, message], index) => (
-              <p key={index} className={styles["text-error"]}>
-                {message}
-              </p>
-            ))}
+          {getValidationErrorsForField(Field.Email).map((message, index) => (
+            <p key={index} className={styles["text-error"]}>
+              {message}
+            </p>
+          ))}
         </div>
         <div>
           <label htmlFor="password">Password</label>
@@ -177,18 +105,13 @@ export default function LoginPage() {
             id="password"
             type="password"
             className={styles["text-field"]}
-            onBlur={(event) => {
-              const value = event.target.value;
-              validateField(Field.Password, value);
-            }}
+            onBlur={() => validateField(Field.Password)}
           />
-          {validationErrors
-            .filter(([field, _]) => field === Field.Password)
-            .map(([_, message], index) => (
-              <p key={index} className={styles["text-error"]}>
-                {message}
-              </p>
-            ))}
+          {getValidationErrorsForField(Field.Password).map((message, index) => (
+            <p key={index} className={styles["text-error"]}>
+              {message}
+            </p>
+          ))}
         </div>
         {loginError !== null && (
           <p className={styles["text-error"]}>{loginError}</p>
