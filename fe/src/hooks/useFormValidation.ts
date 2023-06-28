@@ -122,10 +122,8 @@ export const useFormValidation = <F extends Record<string, unknown>>(
   }
 
   return {
-    validationErrors,
     validateField,
     validateAllInputs,
-    setValidationErrors,
     getValidationErrorsForField,
     getInputValues
   };
