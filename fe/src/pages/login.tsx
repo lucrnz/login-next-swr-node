@@ -9,13 +9,20 @@ import { defaultPageLoggedIn } from "@/config";
 import { useUser } from "@/hooks/User/useUser";
 import { Card } from "@/components/Card/Card";
 
+// @TODO: Move this validation logic!!
+
 enum Field {
   Password,
   Email
 }
 
+type ValidationValue = {
+  validate: (value: string) => Boolean;
+  message: string;
+};
+
 const validations: {
-  [field in Field]: { validate: (value: string) => Boolean; message: string };
+  [field in Field]: ValidationValue;
 } = {
   [Field.Email]: {
     validate: (value: string) => value.includes("@") && value.trim() !== "",
@@ -57,17 +64,57 @@ export default function LoginPage() {
     };
 
     for (const validation of Object.entries(validations)) {
-      const [key, value] = validation;
-      const { validate, message } = value;
+      const [key, validationValue] = validation;
       const field: Field = +key;
+      const newErrors = validateInput(values[field], validationValue).map(
+        (error) => [field, error] as [Field, string]
+      );
 
-      if (!validate(values[field])) {
-        errors.push([field, message]);
+      for (const entry of newErrors) {
+        errors.push(entry);
       }
     }
 
     setValidationErrors((_) => errors);
     return { errors, values };
+  }
+
+  function validateInput(value: string, validation: ValidationValue) {
+    const errors: string[] = [];
+
+    const { validate, message } = validation;
+
+    if (!validate(value)) {
+      errors.push(message);
+    }
+
+    return errors;
+  }
+
+  function validateField(field: Field, value: string) {
+    const entries = Object.entries(validations);
+
+    const entry = entries.find(
+      ([validationKey, _]) => (+validationKey as Field) === field
+    );
+
+    if (!entry) {
+      return;
+    }
+
+    const [_, validation] = entry;
+
+    const newErrors = validateInput(value, validation).map(
+      (error) => [field, error] as [Field, string]
+    );
+
+    setValidationErrors((errors) => {
+      // Get validation errors from other inputs only
+      const filtered = errors.filter(([key, _]) => (+key as Field) !== field);
+
+      // Add validation errors from this input
+      return [...filtered, ...newErrors];
+    });
   }
 
   async function formSubmitEventHandler(event: FormEvent<HTMLFormElement>) {
@@ -111,7 +158,10 @@ export default function LoginPage() {
             id="email"
             type="email"
             className={styles["text-field"]}
-            onBlur={validateInputs}
+            onBlur={(event) => {
+              const value = event.target.value;
+              validateField(Field.Email, value);
+            }}
           />
           {validationErrors
             .filter(([field, _]) => field === Field.Email)
@@ -127,7 +177,10 @@ export default function LoginPage() {
             id="password"
             type="password"
             className={styles["text-field"]}
-            onBlur={validateInputs}
+            onBlur={(event) => {
+              const value = event.target.value;
+              validateField(Field.Password, value);
+            }}
           />
           {validationErrors
             .filter(([field, _]) => field === Field.Password)
