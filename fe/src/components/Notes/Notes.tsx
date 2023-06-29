@@ -1,3 +1,4 @@
+import React, { PropsWithChildren } from "react";
 import { useUser } from "@/hooks/User/useUser";
 import { useNoteList } from "@/hooks/Notes/useNoteList";
 import { useNote } from "@/hooks/Notes/useNote";
@@ -18,7 +19,11 @@ function FetchNote({ noteId }: NoteProps) {
   return <DisplayNote note={note} addLink={true} />;
 }
 
-export function Notes() {
+export function Notes({
+  wrapper: providedWrapper
+}: {
+  wrapper?: React.FC<PropsWithChildren<unknown>>;
+}) {
   const { user, loading: loadingUser } = useUser();
   const { noteList: gotNoteList, loading: loadingNoteList } = useNoteList();
 
@@ -33,13 +38,15 @@ export function Notes() {
 
   const noteList = gotNoteList ? gotNoteList : [];
 
+  const Wrapper = providedWrapper ? providedWrapper : React.Fragment;
+
   return (
     <div>
       {noteList.length > 0 ? (
         noteList.map((noteId, index) => (
-          <li key={index}>
+          <Wrapper key={index}>
             <FetchNote key={index} noteId={noteId} />
-          </li>
+          </Wrapper>
         ))
       ) : (
         <p>No notes yet...</p>

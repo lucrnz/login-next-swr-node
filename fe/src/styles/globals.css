@@ -5,6 +5,16 @@
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+h1,
+h2,
+h3,
+h4 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover {

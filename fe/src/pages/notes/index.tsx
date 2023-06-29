@@ -3,6 +3,8 @@ import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Notes } from "@/components/Notes/Notes";
+import { Card } from "@/components/Card/Card";
+import styles from "@/styles/notes/index.module.css";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -25,9 +27,13 @@ export default function NotesPage() {
 
   return (
     <MainLayout title={title}>
-      <h1>Notes</h1>
-      <h2>Welcome {user.name}!</h2>
-      <Notes />
+      <div className={styles["main-layout"]}>
+        <Card>
+          <h1>Notes</h1>
+          <h2>Welcome {user.name}!</h2>
+        </Card>
+        <Notes wrapper={Card} />
+      </div>
     </MainLayout>
   );
 }

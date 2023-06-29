@@ -1,6 +1,6 @@
 import { Note } from "@/types/Note";
 import Link from "next/link";
-import { Card } from "../Card/Card";
+import commonStyles from "@/styles/common.module.css";
 
 export function DisplayNote({
   note,
@@ -12,17 +12,19 @@ export function DisplayNote({
   const addLink = providedAddLink ?? false;
 
   return (
-    <Card>
+    <>
       {
         <h2>
           {addLink ? (
-            <Link href={`/notes/${note.id}`}>{note.title}</Link>
+            <Link href={`/notes/${note.id}`} className={commonStyles["link"]}>
+              {note.title}
+            </Link>
           ) : (
             note.title
           )}
         </h2>
       }
       <p>{note.contents}</p>
-    </Card>
+    </>
   );
 }
