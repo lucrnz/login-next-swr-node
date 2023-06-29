@@ -24,9 +24,11 @@ export async function postNoteEndpointHandler(
   try {
     const { note } = body;
 
-    note.id = uuidv4();
-    noteId = note.id;
+    if (note.id.length === 0) {
+      note.id = uuidv4();
+    }
 
+    noteId = note.id;
     await writeNote(user.id, note);
   } catch (err) {
     console.error(err);

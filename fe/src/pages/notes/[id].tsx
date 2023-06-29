@@ -2,8 +2,26 @@ import { EditNote } from "@/components/EditNote/EditNote";
 import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { useNote } from "@/hooks/Notes/useNote";
 import { useUser } from "@/hooks/User/useUser";
+import { ApiStatusMessage } from "@/types/Api";
+import { Note } from "@/types/Note";
+import { fetchApi } from "@/utils/api";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
+async function saveNote(note: Note) {
+  const { data: apiResult } = await fetchApi<ApiStatusMessage, { note: Note }>({
+    url: `note/${note.id}`,
+    method: "POST",
+    body: { note }
+  });
+
+  const { data } = apiResult;
+
+  if (!apiResult.success) {
+    const { message } = data;
+    throw new Error(message);
+  }
+}
 
 export default function NoteIdPage() {
   const router = useRouter();
@@ -43,13 +61,7 @@ export default function NoteIdPage() {
 
   return (
     <MainLayout title={note.title}>
-      <EditNote
-        note={note}
-        onSave={(note) => {
-          console.log("To save", note);
-        }}
-        isLoading={false}
-      />
+      <EditNote note={note} onSave={saveNote} isLoading={false} />
     </MainLayout>
   );
 }
