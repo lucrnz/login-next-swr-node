@@ -29,8 +29,8 @@ export default function NotesPage() {
     <MainLayout title={title}>
       <div className={styles["main-layout"]}>
         <Card>
-          <h1>Notes</h1>
-          <h2>Welcome {user.name}!</h2>
+          <h1 className={styles["title"]}>Notes</h1>
+          <h2 className={styles["subtitle"]}>Welcome {user.name}!</h2>
         </Card>
         <Notes wrapper={Card} />
       </div>
