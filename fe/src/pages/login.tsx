@@ -76,56 +76,62 @@ export default function LoginPage() {
     }
   }
 
-  let formContents = <p>You are being redirected, please wait...</p>;
-
-  if (!isRedirecting) {
-    formContents = (
-      <form
-        className={styles["form"]}
-        onSubmit={formSubmitEventHandler}
-        ref={formRef}
-      >
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            className={styles["text-field"]}
-            onBlur={() => validateField(Field.Email)}
-          />
-          {getValidationErrorsForField(Field.Email).map((message, index) => (
-            <p key={index} className={styles["text-error"]}>
-              {message}
-            </p>
-          ))}
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            className={styles["text-field"]}
-            onBlur={() => validateField(Field.Password)}
-          />
-          {getValidationErrorsForField(Field.Password).map((message, index) => (
-            <p key={index} className={styles["text-error"]}>
-              {message}
-            </p>
-          ))}
-        </div>
-        {loginError !== null && (
-          <p className={styles["text-error"]}>{loginError}</p>
-        )}
-        <input type="submit" value="Login" />
-      </form>
-    );
-  }
-
   return (
-    <MainLayout title="Login">
-      <Card>
-        <span className={styles["title"]}>Welcome - Login</span>
-        {formContents}
+    <MainLayout title="Login" classList={[styles["main-layout"]]}>
+      <Card classList={[styles["main-card"]]}>
+        <div className={styles["main-container"]}>
+          <span className={styles["title"]}>Welcome - Login</span>
+          {isRedirecting ? (
+            <p>You are being redirected, please wait...</p>
+          ) : (
+            <form
+              className={styles["form"]}
+              onSubmit={formSubmitEventHandler}
+              ref={formRef}
+            >
+              <div>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  className={styles["text-field"]}
+                  onBlur={() => validateField(Field.Email)}
+                />
+                {getValidationErrorsForField(Field.Email).map(
+                  (message, index) => (
+                    <span key={index} className={styles["text-error"]}>
+                      {message}
+                    </span>
+                  )
+                )}
+              </div>
+              <div>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  className={styles["text-field"]}
+                  onBlur={() => validateField(Field.Password)}
+                />
+                {getValidationErrorsForField(Field.Password).map(
+                  (message, index) => (
+                    <span key={index} className={styles["text-error"]}>
+                      {message}
+                    </span>
+                  )
+                )}
+              </div>
+              {loginError !== null && (
+                <span className={styles["text-error"]}>{loginError}</span>
+              )}
+              <input
+                type="submit"
+                value="Login"
+                className={styles["submit-btn"]}
+              />
+            </form>
+          )}
+        </div>
       </Card>
     </MainLayout>
   );

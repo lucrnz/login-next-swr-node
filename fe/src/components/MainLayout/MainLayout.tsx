@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect } from "react";
-import { defaultFont, APP_NAME } from "@/config";
+import { APP_NAME } from "@/config";
 import DefaultHeader from "@/components/Header/Header";
 import Head from "next/head";
 import styles from "./MainLayout.module.css";
@@ -15,7 +15,7 @@ export const MainLayout = ({
   title,
   children
 }: MainProps) => {
-  const defaultClassList = [styles["main"], defaultFont.className];
+  const defaultClassList = [styles["main"]];
   const classList = providedClassList
     ? [...providedClassList, ...defaultClassList]
     : defaultClassList;
