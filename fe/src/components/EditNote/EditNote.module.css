@@ -1,0 +1,62 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  height: 1.3rem;
+}
+
+.edit-btn > svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 0.1rem;
+}
+
+.edit-title,
+.display-title {
+  height: 2.1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: none;
+  outline: none;
+}
+
+.edit-title {
+  width: 100%;
+}
+
+.edit-contents,
+.display-contents {
+  width: 100%;
+  resize: none;
+  outline: none;
+}
+
+.edit-contents {
+  border: 0.1rem solid lightblue;
+  border-radius: 0.5rem;
+}
+
+.display-contents {
+  border: none;
+}
+
+.display-title {
+  padding: 0.1rem;
+  margin: 0;
+}

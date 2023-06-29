@@ -1,4 +1,4 @@
-import { EditNote } from "@/components/DisplayNote/DisplayNote";
+import { EditNote } from "@/components/EditNote/EditNote";
 import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { useNote } from "@/hooks/Notes/useNote";
 import { useUser } from "@/hooks/User/useUser";
