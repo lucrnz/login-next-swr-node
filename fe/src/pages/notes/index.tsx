@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { Notes } from "@/components/Notes/Notes";
 import { Card } from "@/components/Card/Card";
 import styles from "@/styles/notes/index.module.css";
+import { greetUserByTime } from "@/utils/greetUserByTime";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -30,7 +31,9 @@ export default function NotesPage() {
       <div className={styles["main-layout"]}>
         <Card>
           <h1 className={styles["title"]}>Notes</h1>
-          <h2 className={styles["subtitle"]}>Welcome {user.name}!</h2>
+          <h2 className={styles["subtitle"]}>
+            {`${greetUserByTime()}, ${user.name}!`}
+          </h2>
         </Card>
         <Notes wrapper={Card} />
       </div>
