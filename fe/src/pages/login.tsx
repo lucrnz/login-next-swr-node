@@ -51,8 +51,7 @@ export default function LoginPage() {
   } = useFormValidation(validations, formRef);
 
   useEffect(() => {
-    if (!loggedOut && !loadingUser) {
-      setIsRedirecting((_) => true);
+    if (!loggedOut && !loadingUser && isRedirecting) {
       router.replace(defaultPageLoggedIn);
     }
   }, [loggedOut, loadingUser]);
@@ -79,7 +78,9 @@ export default function LoginPage() {
 
     const loginResult = await loginAction(userData);
 
-    if (!loginResult.success) {
+    if (loginResult.success) {
+      setIsRedirecting((_) => true);
+    } else {
       setLoginError(loginResult.data.message);
     }
   }
