@@ -34,8 +34,6 @@ export function getApiFetcher<ResultType, RequestBodyType>(
       ...options
     });
 
-    console.log("getApiFetcher data", data);
-
     if (!data.success) {
       throw new Error((data as ApiResponse<ApiStatusMessage>).data.message);
     }
