@@ -29,6 +29,24 @@ corepack prepare pnpm@latest --activate
 
 ## Development
 
+Make sure to setup the backend environment variables.
+
+```sh
+cd be
+cp .env.example .env
+```
+
+Change the values:
+
+```sh
+JWT_SECRET=<your secret>
+JWT_EXPIRE_TIME=1h
+```
+
+Secret must be a generated password, expire time can be described as needed by the [vercel/ms](https://github.com/vercel/ms) library.
+
+On the **project root** folder:
+
 ```sh
 pnpm install
 pnpm start
