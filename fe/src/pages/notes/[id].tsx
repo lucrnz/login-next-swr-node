@@ -2,32 +2,17 @@ import { EditNote } from "@/components/EditNote/EditNote";
 import { MainLayout } from "@/components/MainLayout/MainLayout";
 import { useNote } from "@/hooks/Notes/useNote";
 import { useUser } from "@/hooks/User/useUser";
-import { ApiStatusMessage } from "@/types/Api";
 import { Note } from "@/types/Note";
-import { fetchApi } from "@/utils/api";
+import { saveNote } from "@/utils/saveNote";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-
-async function saveNote(note: Note) {
-  const { data: apiResult } = await fetchApi<ApiStatusMessage, { note: Note }>({
-    url: `note/${note.id}`,
-    method: "POST",
-    body: { note }
-  });
-
-  const { data } = apiResult;
-
-  if (!apiResult.success) {
-    const { message } = data;
-    throw new Error(message);
-  }
-}
+import { useEffect, useState } from "react";
 
 export default function NoteIdPage() {
   const router = useRouter();
   const { id } = router.query;
   const { user, loggedOut, loading: loadingUser } = useUser();
   const { note, loading: loadingNote, error } = useNote(id as string);
+  const [isSavingNote, setIsSavingNote] = useState(false);
 
   useEffect(() => {
     if (loggedOut) {
@@ -59,9 +44,15 @@ export default function NoteIdPage() {
     );
   }
 
+  async function onSaveNote(note: Note) {
+    setIsSavingNote((_) => true);
+    await saveNote(note);
+    setIsSavingNote((_) => false);
+  }
+
   return (
     <MainLayout title={note.title}>
-      <EditNote note={note} onSave={saveNote} isLoading={false} />
+      <EditNote note={note} onSave={onSaveNote} isLoading={isSavingNote} />
     </MainLayout>
   );
 }
