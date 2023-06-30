@@ -1,7 +1,5 @@
 import { useUser } from "@/hooks/User/useUser";
 import { MainLayout } from "@/components/MainLayout/MainLayout";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { Notes } from "@/components/Notes/Notes";
 import { Card } from "@/components/Card/Card";
 import styles from "@/styles/notes/index.module.css";
