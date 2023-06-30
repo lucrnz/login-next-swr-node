@@ -7,13 +7,13 @@ import { Card } from "@/components/Card/Card";
 
 export default function IndexPage() {
   const router = useRouter();
-  const { loggedOut } = useUser();
+  const { loggedOut, loading: loadingUser } = useUser();
 
   useEffect(() => {
-    if (!loggedOut) {
+    if (!loggedOut && !loadingUser) {
       router.replace(defaultPageLoggedIn);
     }
-  }, [loggedOut]);
+  }, [loggedOut, loadingUser]);
 
   return (
     <MainLayout>
