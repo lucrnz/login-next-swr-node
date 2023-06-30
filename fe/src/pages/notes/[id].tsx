@@ -5,22 +5,16 @@ import { useUser } from "@/hooks/User/useUser";
 import { Note } from "@/types/Note";
 import { saveNote } from "@/utils/saveNote";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function NoteIdPage() {
   const router = useRouter();
   const { id } = router.query;
-  const { user, loggedOut, loading: loadingUser } = useUser();
+  const { user, loggedOut, loading: loadingUser, loginExpired } = useUser();
   const { note, loading: loadingNote, error } = useNote(id as string);
   const [isSavingNote, setIsSavingNote] = useState(false);
 
-  useEffect(() => {
-    if (loggedOut) {
-      router.replace("/login");
-    }
-  }, [loggedOut]);
-
-  if (loggedOut || !user) {
+  if (loggedOut || !user || loginExpired) {
     return (
       <MainLayout title="Note">
         <p>Please log in to visit this page.</p>

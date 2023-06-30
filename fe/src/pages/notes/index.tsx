@@ -10,15 +10,8 @@ import { greetUserByTime } from "@/utils/greetUserByTime";
 import Link from "next/link";
 
 export default function NotesPage() {
-  const router = useRouter();
   const { user, loggedOut } = useUser();
   const title = "My Notes";
-
-  useEffect(() => {
-    if (loggedOut) {
-      router.replace("/login");
-    }
-  }, [loggedOut]);
 
   if (loggedOut || !user) {
     return (
