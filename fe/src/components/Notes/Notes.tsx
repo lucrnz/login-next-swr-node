@@ -49,7 +49,19 @@ export function Notes({
           </Wrapper>
         ))
       ) : (
-        <p>No notes yet...</p>
+        <Wrapper>
+          <h3
+            style={{
+              fontWeight: "600"
+            }}
+          >
+            No notes yet!
+          </h3>
+          <p>Start fresh and let your creativity shine.</p>
+          <p>
+            Create, organize, and make this space your own. Happy note-taking!
+          </p>
+        </Wrapper>
       )}
     </div>
   );
