@@ -35,6 +35,6 @@ app.delete("/note", authenticate, deleteNoteEndpointHandler);
 
 const port = getEnv(EnvironmentVariable.Port) as number;
 
-app.listen(port, () =>
-  console.log(`API Server running at http://localhost:${port}`)
-);
+app.listen(port, () => {
+  console.log(`API Server running at http://localhost:${port}`);
+});
