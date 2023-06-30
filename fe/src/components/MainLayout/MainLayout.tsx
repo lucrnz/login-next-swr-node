@@ -49,7 +49,7 @@ export const MainLayout = ({
         </Head>
       )}
       <main className={classList.join(" ")}>
-        <DefaultHeader loggedOut={loggedOut} />
+        <DefaultHeader />
         <div className={styles["main-container"]}>{children}</div>
       </main>
     </>
