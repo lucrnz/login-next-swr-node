@@ -9,14 +9,17 @@ import { useRouter } from "next/router";
 type MainProps = PropsWithChildren<{
   classList?: string[];
   title?: string;
+  disableRedirect?: boolean;
 }>;
 
 export const MainLayout = ({
   classList: providedClassList,
+  disableRedirect: providedDisableRedirect,
   title,
   children
 }: MainProps) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const disableRedirect = providedDisableRedirect ?? false;
   const router = useRouter();
   const defaultClassList = [styles["main"]];
   const classList = providedClassList
@@ -26,7 +29,7 @@ export const MainLayout = ({
   const { loggedOut, loading: loadingUser, loginExpired } = useUser();
 
   useEffect(() => {
-    if (!loadingUser && !isRedirecting && loggedOut) {
+    if (!disableRedirect && !loadingUser && !isRedirecting && loggedOut) {
       const query = loginExpired
         ? { message: "Login expired. Please login again." }
         : undefined;
@@ -36,7 +39,7 @@ export const MainLayout = ({
       });
       setIsRedirecting((_) => true);
     }
-  }, [loggedOut, loginExpired, loadingUser]);
+  }, [loggedOut, loginExpired, loadingUser, disableRedirect]);
 
   return (
     <>

@@ -85,7 +85,11 @@ export default function LoginPage() {
   }
 
   return (
-    <MainLayout title="Login" classList={[styles["main-layout"]]}>
+    <MainLayout
+      title="Login"
+      classList={[styles["main-layout"]]}
+      disableRedirect
+    >
       <Card classList={[styles["main-card"]]}>
         <div className={styles["main-container"]}>
           {message.length > 0 && (
