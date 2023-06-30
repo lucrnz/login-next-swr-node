@@ -16,7 +16,7 @@ export default function IndexPage() {
   }, [loggedOut, loadingUser]);
 
   return (
-    <MainLayout>
+    <MainLayout disableRedirect={true}>
       <Card>
         <h1>Login example</h1>
         <p>This is main page that anyone can read.</p>
