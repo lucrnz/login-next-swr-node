@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { getApiFetcher, getMockFetcher } from "@/utils/api";
+import { getApiFetcher } from "@/utils/api";
 import { User } from "@/types/User";
 
 export function useUser() {
@@ -26,11 +26,11 @@ export function useUser() {
   }
 
   const error = gotError ? (gotError as Error) : undefined;
-  const loginExpired = error && error.message === "Expired login";
+  const loginExpired = Boolean(error && error.message === "Expired login");
 
   return {
     loading: isLoading,
-    loggedOut: !user,
+    loggedOut: !user || loginExpired,
     loginExpired,
     user,
     mutate,
