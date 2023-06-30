@@ -28,16 +28,14 @@ export function loginEndpointHandler(req: Request, res: Response) {
       .send(newStatusMessage(false, "Invalid email or password"));
   }
 
-  const token = jwt.sign({ id: user.id }, secret, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user.id }, secret, {
+    expiresIn: getEnv(EnvironmentVariable.JwtExpireTime).toString()
+  });
 
   res.setHeader("cache-control", "no-cache");
 
-  const environment = `${getEnv(EnvironmentVariable.NodeEnv)}`;
-
-  console.log("node env", environment);
-
   const cookieConfig: CookieOptions =
-    environment === "production"
+    getEnv(EnvironmentVariable.NodeEnv).toString() === "production"
       ? { httpOnly: true, sameSite: "none", secure: true }
       : { httpOnly: true };
 

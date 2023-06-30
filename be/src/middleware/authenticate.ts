@@ -42,6 +42,13 @@ export function authenticate(
     req.user = userData;
     next();
   } catch (err) {
+    if (err instanceof jwt.TokenExpiredError) {
+      return res.status(StatusCode.ClientErrorUnauthorized).send({
+        success: false,
+        data: { message: "Expired login" }
+      } as ApiResponse<ApiStatusMessage>);
+    }
+
     console.error("[node api]", err);
     return res.status(StatusCode.ServerErrorInternal).send({
       success: false,
