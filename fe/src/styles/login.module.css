@@ -39,6 +39,13 @@
   color: red;
 }
 
+.header-message {
+  width: 100%;
+  color: rgb(185, 28, 28);
+  background-color: rgba(185, 28, 28, 0.1);
+  padding: 0.75rem;
+}
+
 .text-field,
 .submit-btn {
   padding: 0.75rem;
