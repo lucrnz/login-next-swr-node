@@ -14,7 +14,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN pnpm run build
+RUN yarn global add pnpm && pnpm run build
 
 # Create a lightweight production image
 FROM base AS runner
