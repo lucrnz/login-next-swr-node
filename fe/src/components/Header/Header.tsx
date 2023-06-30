@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./Header.module.css";
 import commonStyles from "@/styles/common.module.css";
 import { APP_NAME } from "@/config";
+import { useUser } from "@/hooks/User/useUser";
 
 type Routes = {
   name: string;
@@ -38,17 +39,17 @@ export function Header({ routes }: HeaderProps) {
   );
 }
 
-type DefaultHeaderProps = {
-  loggedOut: boolean;
-};
+export default function DefaultHeader() {
+  const { loggedOut, loading: loadingUser } = useUser();
 
-export default function DefaultHeader({ loggedOut }: DefaultHeaderProps) {
-  const loginRoutes: Routes = [
-    {
-      name: loggedOut ? "Login" : "Logout",
-      value: loggedOut ? "login" : "logout"
-    }
-  ];
+  const loginRoutes: Routes = loadingUser
+    ? []
+    : [
+        {
+          name: loggedOut ? "Login" : "Logout",
+          value: loggedOut ? "login" : "logout"
+        }
+      ];
 
   return (
     <Header
