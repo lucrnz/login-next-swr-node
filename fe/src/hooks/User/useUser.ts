@@ -1,18 +1,39 @@
 import useSWR from "swr";
-import { getApiFetcher } from "@/utils/api";
+import { getApiFetcher, getMockFetcher } from "@/utils/api";
 import { User } from "@/types/User";
 
-export const useUser = () => {
+export function useUser() {
   const userFetcher = getApiFetcher<User, never>({
     method: "GET"
   });
 
-  const { data: user, mutate, error } = useSWR("me", userFetcher);
+  const {
+    data: user,
+    mutate,
+    error: gotError,
+    isLoading
+  } = useSWR("me", userFetcher);
+
+  if (isLoading) {
+    return {
+      loading: true,
+      loggedOut: true,
+      loginExpired: false,
+      user: undefined,
+      mutate,
+      error: undefined
+    };
+  }
+
+  const error = gotError ? (gotError as Error) : undefined;
+  const loginExpired = error && error.message === "Expired login";
 
   return {
-    loading: !user && !error,
+    loading: isLoading,
     loggedOut: !user,
+    loginExpired,
     user,
-    mutate
+    mutate,
+    error
   };
-};
+}

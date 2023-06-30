@@ -33,7 +33,15 @@ export default function LoginPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const { loggedOut } = useUser();
+  const { loggedOut, loading: loadingUser } = useUser();
+
+  const providedMessage = router.query?.message || "";
+
+  const message = providedMessage
+    ? Array.isArray(providedMessage)
+      ? providedMessage.join(" ")
+      : providedMessage
+    : "";
 
   const {
     validateField,
@@ -43,11 +51,11 @@ export default function LoginPage() {
   } = useFormValidation(validations, formRef);
 
   useEffect(() => {
-    if (!loggedOut) {
-      setIsRedirecting(true);
+    if (!loggedOut && !loadingUser) {
+      setIsRedirecting((_) => true);
       router.replace(defaultPageLoggedIn);
     }
-  }, [loggedOut]);
+  }, [loggedOut, loadingUser]);
 
   async function formSubmitEventHandler(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,6 +88,9 @@ export default function LoginPage() {
     <MainLayout title="Login" classList={[styles["main-layout"]]}>
       <Card classList={[styles["main-card"]]}>
         <div className={styles["main-container"]}>
+          {message.length > 0 && (
+            <span className={styles["header-message"]}>{message}</span>
+          )}
           <span className={styles["title"]}>Welcome - Login</span>
           {isRedirecting ? (
             <p>You are being redirected, please wait...</p>
