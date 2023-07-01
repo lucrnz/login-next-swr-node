@@ -36,61 +36,67 @@ export async function customFetch<ResultType, RequestBodyType>({
   body,
   method
 }: CustomFetchOptions<RequestBodyType>) {
-  const urlObj =
-    url instanceof URL || isAbsoluteURL(url)
-      ? new URL(url.toString())
-      : new URL(
-          url.toString(),
-          typeof window === "undefined" ? undefined : window.location.href
-        );
+  try {
+    const urlObj =
+      url instanceof URL || isAbsoluteURL(url)
+        ? new URL(url.toString())
+        : new URL(
+            url.toString(),
+            typeof window === "undefined" ? undefined : window.location.href
+          );
 
-  if (params && Object.keys(params).length > 0) {
-    for (const key of Object.keys(params)) {
-      urlObj.searchParams.append(key, params[key]);
-    }
-  }
-
-  const defaultConfig: RequestInit = {
-    method: method ?? "GET",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials: "include"
-  };
-
-  let requestInit: RequestInit = defaultConfig;
-
-  if (config) {
-    requestInit = {
-      ...defaultConfig,
-      ...config,
-      headers: {
-        ...defaultConfig.headers,
-        ...config.headers
+    if (params && Object.keys(params).length > 0) {
+      for (const key of Object.keys(params)) {
+        urlObj.searchParams.append(key, params[key]);
       }
+    }
+
+    const defaultConfig: RequestInit = {
+      method: method ?? "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
     };
+
+    let requestInit: RequestInit = defaultConfig;
+
+    if (config) {
+      requestInit = {
+        ...defaultConfig,
+        ...config,
+        headers: {
+          ...defaultConfig.headers,
+          ...config.headers
+        }
+      };
+    }
+
+    if (cookies) {
+      requestInit.headers = {
+        ...requestInit.headers,
+        Cookie: cookiesToHeaderString(cookies)
+      };
+    }
+
+    if (body) {
+      requestInit.body = JSON.stringify(body);
+    }
+
+    const fetchResponse = await fetch(urlObj, requestInit);
+    const { headers, ok, status } = fetchResponse;
+
+    const data = (await fetchResponse.json()) as ResultType;
+
+    return {
+      headers,
+      ok,
+      status,
+      data
+    } as CustomFetchResult<ResultType>;
+  } catch (err) {
+    console.error("customFetch", err);
+
+    throw err;
   }
-
-  if (cookies) {
-    requestInit.headers = {
-      ...requestInit.headers,
-      Cookie: cookiesToHeaderString(cookies)
-    };
-  }
-
-  if (body) {
-    requestInit.body = JSON.stringify(body);
-  }
-
-  const fetchResponse = await fetch(urlObj, requestInit);
-  const { headers, ok, status } = fetchResponse;
-
-  const data = (await fetchResponse.json()) as ResultType;
-
-  return {
-    headers,
-    ok,
-    status,
-    data
-  } as CustomFetchResult<ResultType>;
 }

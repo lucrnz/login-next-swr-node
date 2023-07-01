@@ -66,7 +66,7 @@ export async function forwardRequestToBackend<T>({
 
     res.status(status).json(data);
   } catch (e) {
-    console.error(e);
+    console.error("forwardRequestToBackend", e);
 
     if (cacheControl) {
       res.setHeader("cache-control", cacheControl);
