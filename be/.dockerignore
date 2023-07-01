@@ -1,1 +1,7 @@
 data
+node_modules
+*debug.log*
+build
+dist
+.env*
+.cache
