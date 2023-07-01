@@ -13,7 +13,7 @@ export default function IndexPage() {
     if (!loggedOut && !loadingUser) {
       router.replace(defaultPageLoggedIn);
     }
-  }, [loggedOut, loadingUser]);
+  }, [loggedOut, loadingUser, router]);
 
   return (
     <MainLayout disableRedirect={true}>

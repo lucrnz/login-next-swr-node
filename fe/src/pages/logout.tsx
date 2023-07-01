@@ -16,7 +16,7 @@ export default function LogoutPage() {
         router.replace("/");
       });
     }
-  }, [loggedOut]);
+  }, [loggedOut, router, mutate]);
 
   return (
     <MainLayout>

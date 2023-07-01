@@ -8,7 +8,7 @@ export async function fetchBackend<ResultType, RequestBodyType>({
   body,
   method
 }: CustomFetchOptions<RequestBodyType>) {
-  const backendUrl = "http://localhost:3002";
+  const backendUrl = process.env["BE_URL"];
   return await customFetch<ResultType, RequestBodyType>({
     url: `${backendUrl}/${url}`,
     body,

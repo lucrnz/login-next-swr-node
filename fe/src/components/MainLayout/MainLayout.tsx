@@ -39,7 +39,14 @@ export const MainLayout = ({
       });
       setIsRedirecting((_) => true);
     }
-  }, [loggedOut, loginExpired, loadingUser, disableRedirect]);
+  }, [
+    loggedOut,
+    loginExpired,
+    loadingUser,
+    disableRedirect,
+    isRedirecting,
+    router
+  ]);
 
   return (
     <>

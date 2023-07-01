@@ -54,7 +54,7 @@ export default function LoginPage() {
     if (!loggedOut && !loadingUser && isRedirecting) {
       router.replace(defaultPageLoggedIn);
     }
-  }, [loggedOut, loadingUser]);
+  }, [loggedOut, loadingUser, isRedirecting, router]);
 
   async function formSubmitEventHandler(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

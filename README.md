@@ -31,12 +31,7 @@ corepack prepare pnpm@latest --activate
 
 Make sure to setup the backend environment variables.
 
-```sh
-cd be
-cp .env.example .env
-```
-
-Change the values:
+For the _backend_: change the values by creating the file `be/.env`:
 
 ```sh
 JWT_SECRET=<your secret>
@@ -44,6 +39,14 @@ JWT_EXPIRE_TIME=1h
 ```
 
 Secret must be a generated password, expire time can be described as needed by the [vercel/ms](https://github.com/vercel/ms) library.
+
+For the _frontend_: change the values by creating the file `fe/.env.local`:
+
+```sh
+BE_URL=http://localhost:3002
+```
+
+This variable must reflect the URL of the backend.
 
 On the **project root** folder:
 

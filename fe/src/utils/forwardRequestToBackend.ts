@@ -43,7 +43,8 @@ export async function forwardRequestToBackend<T>({
 
   try {
     const apiResponse = await fetchBackend<
-      ApiResponse<T> | ApiResponse<ApiStatusMessage>
+      ApiResponse<T> | ApiResponse<ApiStatusMessage>,
+      any
     >({
       url: url,
       method: req.method,
