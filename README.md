@@ -55,6 +55,10 @@ pnpm install
 pnpm start
 ```
 
+## Deployment
+
+Check the [DEPLOY.md](./DEPLOY.md) file for more information.
+
 ## Copying
 
 Read the [LICENSE](./LICENSE) file for more information.
