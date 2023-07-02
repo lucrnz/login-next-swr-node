@@ -50,6 +50,8 @@ npm start
 
 If you choose to use containers, check out the [containers guide](./doc/deploy/containers.md).
 
+Or you can run node directly on the server, check out [traditional guide](./doc/deploy/traditional.md).
+
 Lastly, don't forget to setup the [reverse proxy](./doc/deploy/reverse-proxy.md)
 
 ## Copying

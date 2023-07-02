@@ -135,3 +135,7 @@ Allow the user to auto-start its service units:
 ```sh
 sudo loginctl enable-linger username
 ```
+
+## Reminder about reverse-proxy
+
+Don't forget to check the documentation on the [reverse proxy](./reverse-proxy.md)
