@@ -2,7 +2,7 @@
 
 This project uses docker-compatible containers.
 
-This document explains how to deploy it using the podman container manager.
+This document explains how to deploy it using the [podman](https://podman.io/) container manager.
 
 Setup your server, login via SSH and copy the repository tarball.
 
@@ -95,6 +95,8 @@ sudo systemctl enable --now caddy.service
 ```
 
 ## Setup systemd unit services
+
+You can read more about [systemd user units here](https://wiki.archlinux.org/title/systemd/User).
 
 Before doing this, you should stop the podman containers if they are running.
 
