@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "cd be && pnpm install && cd ../fe && pnpm install",
-    "start": "concurrently \"cd be && pnpm run dev\" \"cd fe && pnpm run dev\"",
+    "install": "cd be && npm install && cd ../fe && npm install",
+    "start": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\"",
     "prepare": "husky install"
   },
   "author": "lucdev<lucdev.net>",
