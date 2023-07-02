@@ -6,6 +6,8 @@ This document explains how to deploy it using the podman container manager.
 
 Setup your server, login via SSH and copy the repository tarball.
 
+I will be using a system user with id 1000 and group-id 1000, to avoid using the privileged root user.
+
 ## Build images
 
 ```sh
@@ -61,6 +63,8 @@ CONTAINER ID  IMAGE                          COMMAND               CREATED      
 
 ## Setup reverse proxy
 
+For this I am using the [Caddy](https://caddyserver.com/) server but setting up nginx should be very similar.
+
 First don't forget to open relevant ports on your service firewall or using `ufw`
 
 ```sh
@@ -68,13 +72,13 @@ sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 ```
 
-For this I am using the [Caddy](https://caddyserver.com/) server but setting up nginx should be very similar.
+Let's edit the Caddyfile
 
 ```sh
 sudo nano /etc/caddy/Caddyfile
 ```
 
-Caddyfile
+Example contents:
 
 ```
 login-swr.yourdomain.tld {
@@ -88,4 +92,79 @@ api.login-swr.yourdomain.tld {
 
 ```sh
 sudo systemctl enable --now caddy.service
+```
+
+## Setup systemd unit services
+
+Before doing this, you should stop the podman containers if they are running.
+
+To allow services to autostart, we are gonna create systemd user service units.
+
+```sh
+mkdir -p ~/.config/systemd/user
+cd ~/.config/systemd/user
+```
+
+Create the following file `login-swr-be.service`:
+
+Example contents:
+
+```
+[Unit]
+Description=login-swr-be
+After=network.target
+
+[Service]
+WorkingDirectory=/home/user/host/login-next-swr-node/be
+Restart=always
+ExecStartPre=-/usr/bin/podman rm "container-login-swr-be"
+ExecStart=/usr/bin/podman run --name container-login-swr-be -p 127.0.0.1:3002:3002 -v login-swr-be-data:/app/data --user 1001:1001 --env-file ./.env login-swr-be
+ExecStop=/usr/bin/podman stop "container-login-swr-be"
+
+[Install]
+WantedBy=default.target
+```
+
+Please replace "/home/user" with the appropriate home user directory.
+
+Create the following file `login-swr-fe.service`:
+
+Example contents:
+
+```
+[Unit]
+Description=login-swr-fe
+After=network.target
+
+[Service]
+WorkingDirectory=/home/user/host/login-next-swr-node/fe
+Restart=always
+ExecStartPre=-/usr/bin/podman rm "container-login-swr-fe"
+ExecStart=/usr/bin/podman run --name container-login-swr-fe -p 127.0.0.1:3002:3002 --user 1001:1001 --env-file ./.env.local login-swr-fe
+ExecStop=/usr/bin/podman stop "container-login-swr-fe"
+
+[Install]
+WantedBy=default.target
+```
+
+Please replace "/home/user" with the appropriate home user directory.
+
+Enable the services:
+
+```sh
+systemd --user enable login-swr-be
+systemd --user enable login-swr-fe
+```
+
+Start the services:
+
+```sh
+systemd --user start login-swr-be
+systemd --user start login-swr-fe
+```
+
+Allow the user to auto-start its service units:
+
+```sh
+sudo loginctl enable-linger username
 ```
