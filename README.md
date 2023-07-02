@@ -18,7 +18,7 @@ Note: **Nix with direnv users:** Just by doing `direnv allow` in this directory 
 
 You need [Node.js](https://nodejs.org/en) latest LTS version.
 
-You need the [pnpm] package manager.
+You need the [pnpm](https://pnpm.io) package manager.
 
 You can `enable` it via corepack:
 
