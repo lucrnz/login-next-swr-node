@@ -11,8 +11,8 @@ I will be using a system user with id 1000 and group-id 1000, to avoid using the
 ## Build images
 
 ```sh
-cd be && podman build --no-cache -t "login-swr-be" .
-cd fe && podman build --no-cache -t "login-swr-fe" .
+podman build --no-cache -t "login-swr-be" be/
+podman build --no-cache -t "login-swr-fe" fe/
 ```
 
 ## Create volumes
