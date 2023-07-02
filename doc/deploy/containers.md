@@ -1,4 +1,4 @@
-# How to deploy
+# How to deploy with containers
 
 This project uses docker-compatible containers.
 
@@ -11,8 +11,8 @@ I will be using a system user with id 1000 and group-id 1000, to avoid using the
 ## Build images
 
 ```sh
-podman build --no-cache -t "login-swr-be" be/
-podman build --no-cache -t "login-swr-fe" fe/
+./be/scripts/build-container.sh
+./fe/scripts/build-container.sh
 ```
 
 ## Create volumes
@@ -23,11 +23,10 @@ podman volume create login-swr-be-data
 
 ## Start backend service
 
-Create a `.env` file and setup the needed environment variables that are specified on the [README](./README.md) document.
+Create a `.env` on the `/be` directory file and setup the needed environment variables that are specified on the [README](../../README.md) document.
 
 ```sh
-cd be/
-podman run -d -p 127.0.0.1:3002:3002 -v login-swr-be-data:/app/data --user 1001:1001 --env-file ./.env login-swr-be
+./be/scripts/run-container.sh
 ```
 
 Check the container is running
@@ -43,11 +42,10 @@ CONTAINER ID  IMAGE                          COMMAND               CREATED      
 
 ## Start front-end service
 
-Create a `.env.local` file and setup the needed environment variables that are specified on the [README](./README.md) document.
+Create a `.env.local` file on the `/fe` directory and setup the needed environment variables that are specified on the [README](../../README.md) document.
 
 ```sh
-cd fe/
-podman run -d -p 127.0.0.1:3000:3000 --user 1001:1001 --env-file ./.env.local login-swr-fe
+./fe/scripts/run-container.sh
 ```
 
 Check the container is running
@@ -59,39 +57,6 @@ podman ps
 ```
 CONTAINER ID  IMAGE                          COMMAND               CREATED         STATUS             PORTS                     NAMES
 761c463e020e  localhost/login-swr-fe:latest  node server.js        21 seconds ago  Up 11 seconds ago  127.0.0.1:3000->3000/tcp  quizzical_spence
-```
-
-## Setup reverse proxy
-
-For this I am using the [Caddy](https://caddyserver.com/) server but setting up nginx should be very similar.
-
-First don't forget to open relevant ports on your service firewall or using `ufw`
-
-```sh
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-```
-
-Let's edit the Caddyfile
-
-```sh
-sudo nano /etc/caddy/Caddyfile
-```
-
-Example contents:
-
-```
-login-swr.yourdomain.tld {
-  reverse_proxy localhost:3000
-}
-
-api.login-swr.yourdomain.tld {
-  reverse_proxy localhost:3002
-}
-```
-
-```sh
-sudo systemctl enable --now caddy.service
 ```
 
 ## Setup systemd unit services

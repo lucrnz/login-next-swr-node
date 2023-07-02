@@ -48,7 +48,9 @@ npm start
 
 ## Deployment
 
-Check the [DEPLOY.md](./DEPLOY.md) file for more information.
+If you choose to use containers, check out the [containers guide](./doc/deploy/containers.md).
+
+Lastly, don't forget to setup the [reverse proxy](./doc/deploy/reverse-proxy.md)
 
 ## Copying
 
