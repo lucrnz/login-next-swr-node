@@ -86,7 +86,9 @@ export async function customFetch<ResultType, RequestBodyType>({
     const fetchResponse = await fetch(urlObj, requestInit);
     const { headers, ok, status } = fetchResponse;
 
-    const data = (await fetchResponse.json()) as ResultType;
+    const dataAsText = await fetchResponse.text();
+
+    const data = JSON.parse(dataAsText) as ResultType;
 
     return {
       headers,
