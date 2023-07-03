@@ -1,6 +1,6 @@
 import { ApiResponseOrMessage } from "@/types/Api";
 import { Note } from "@/types/Note";
-import { forwardRequestToBackend } from "@/utils/forwardRequestToBackend";
+import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(

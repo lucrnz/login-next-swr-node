@@ -2,7 +2,7 @@ type callbackType<T, U> =
   | ((...args: U[]) => T | Promise<T>)
   | (() => T | Promise<T>);
 
-export async function awaitCallbackIfNeeded<T, U>(
+export default async function awaitCallbackIfNeeded<T, U>(
   callback: callbackType<T, U>,
   callbackArgs: U | U[] | undefined = undefined
 ) {

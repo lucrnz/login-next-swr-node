@@ -3,7 +3,7 @@ import {
   ApiResponseOrMessage,
   ApiStatusMessage
 } from "@/types/Api";
-import { CustomFetchOptions, customFetch } from "./customFetch";
+import customFetch, { CustomFetchOptions } from "./customFetch";
 
 export async function fetchApi<ResultType, RequestBodyType>({
   url,

@@ -28,7 +28,7 @@ export type CustomFetchResult<ResultType> = {
   data: ResultType;
 };
 
-export async function customFetch<ResultType, RequestBodyType>({
+export default async function customFetch<ResultType, RequestBodyType>({
   url,
   config,
   cookies,

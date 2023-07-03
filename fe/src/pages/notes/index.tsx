@@ -1,11 +1,11 @@
-import { useUser } from "@/hooks/User/useUser";
-import { MainLayout } from "@/components/MainLayout/MainLayout";
-import { Notes } from "@/components/Notes/Notes";
-import { Card } from "@/components/Card/Card";
+import useUser from "@/hooks/User/useUser";
+import MainLayout from "@/components/MainLayout/MainLayout";
+import Card from "@/components/Card/Card";
 import styles from "@/styles/notes/index.module.css";
 import commonStyles from "@/styles/common.module.css";
-import { greetUserByTime } from "@/utils/greetUserByTime";
+import greetUserByTime from "@/utils/greetUserByTime";
 import Link from "next/link";
+import DisplayNoteList from "@/components/Note/DisplayNote/DisplayNoteList";
 
 export default function NotesPage() {
   const { user, loggedOut } = useUser();
@@ -31,7 +31,7 @@ export default function NotesPage() {
             Create a new note
           </Link>
         </Card>
-        <Notes wrapper={Card} />
+        <DisplayNoteList wrapper={Card} />
       </div>
     </MainLayout>
   );

@@ -1,6 +1,6 @@
-import { CustomFetchOptions, customFetch } from "./customFetch";
+import customFetch, { CustomFetchOptions } from "./customFetch";
 
-export async function fetchBackend<ResultType, RequestBodyType>({
+export default async function fetchBackend<ResultType, RequestBodyType>({
   url,
   config,
   cookies,

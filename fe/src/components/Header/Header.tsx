@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./Header.module.css";
 import commonStyles from "@/styles/common.module.css";
 import { APP_NAME } from "@/config";
-import { useUser } from "@/hooks/User/useUser";
+import useUser from "@/hooks/User/useUser";
 
 type Routes = {
   name: string;
@@ -14,7 +14,7 @@ type HeaderProps = {
   routes: Routes;
 };
 
-export function Header({ routes }: HeaderProps) {
+function Header({ routes }: HeaderProps) {
   return (
     <header className={styles["header"]}>
       <div className={styles["container"]}>
@@ -40,21 +40,15 @@ export function Header({ routes }: HeaderProps) {
 }
 
 export default function DefaultHeader() {
-  const { loggedOut, loading: loadingUser } = useUser();
-
-  const loginRoutes: Routes = loadingUser
-    ? []
-    : [
-        {
-          name: loggedOut ? "Login" : "Logout",
-          value: loggedOut ? "login" : "logout"
-        }
-      ];
+  const { loggedOut } = useUser();
 
   return (
     <Header
       routes={[
-        ...loginRoutes,
+        {
+          name: loggedOut ? "Login" : "Logout",
+          value: loggedOut ? "login" : "logout"
+        },
         {
           name: "Notes",
           value: "notes"

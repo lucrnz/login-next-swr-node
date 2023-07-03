@@ -1,9 +1,9 @@
-import { MainLayout } from "@/components/MainLayout/MainLayout";
+import MainLayout from "@/components/MainLayout/MainLayout";
 import { defaultPageLoggedIn } from "@/config";
-import { useUser } from "@/hooks/User/useUser";
+import useUser from "@/hooks/User/useUser";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { Card } from "@/components/Card/Card";
+import Card from "@/components/Card/Card";
 
 export default function IndexPage() {
   const router = useRouter();

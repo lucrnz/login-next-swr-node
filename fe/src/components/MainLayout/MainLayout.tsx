@@ -3,21 +3,21 @@ import { APP_NAME } from "@/config";
 import DefaultHeader from "@/components/Header/Header";
 import Head from "next/head";
 import styles from "./MainLayout.module.css";
-import { useUser } from "@/hooks/User/useUser";
+import useUser from "@/hooks/User/useUser";
 import { useRouter } from "next/router";
 
-type MainProps = PropsWithChildren<{
+type MainLayoutProps = PropsWithChildren<{
   classList?: string[];
   title?: string;
   disableRedirect?: boolean;
 }>;
 
-export const MainLayout = ({
+export default function MainLayout({
   classList: providedClassList,
   disableRedirect: providedDisableRedirect,
   title,
   children
-}: MainProps) => {
+}: MainLayoutProps) {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const disableRedirect = providedDisableRedirect ?? false;
   const router = useRouter();
@@ -61,4 +61,4 @@ export const MainLayout = ({
       </main>
     </>
   );
-};
+}

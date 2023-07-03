@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { getApiFetcher } from "@/utils/api";
 import { User } from "@/types/User";
 
-export function useUser() {
+function useUser() {
   const userFetcher = getApiFetcher<User, never>({
     method: "GET"
   });
@@ -37,3 +37,5 @@ export function useUser() {
     error
   };
 }
+
+export default useUser;

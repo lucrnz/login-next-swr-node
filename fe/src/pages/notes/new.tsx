@@ -1,7 +1,6 @@
-import { useUser } from "@/hooks/User/useUser";
-import { useRouter } from "next/router";
-import { Card } from "@/components/Card/Card";
-import { MainLayout } from "@/components/MainLayout/MainLayout";
+import useUser from "@/hooks/User/useUser";
+import Card from "@/components/Card/Card";
+import MainLayout from "@/components/MainLayout/MainLayout";
 
 export default function NewNotePage() {
   const { user, loggedOut } = useUser();

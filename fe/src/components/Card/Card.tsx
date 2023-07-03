@@ -2,12 +2,14 @@ import { PropsWithChildren } from "react";
 
 import styles from "./Card.module.css";
 
-export function Card({
+type CardProps = PropsWithChildren<{
+  classList?: string[];
+}>;
+
+export default function Card({
   children,
   classList: providedClassList
-}: PropsWithChildren<{
-  classList?: string[];
-}>) {
+}: CardProps) {
   const classList = providedClassList ?? [];
 
   return (

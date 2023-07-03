@@ -1,9 +1,9 @@
-import { EditNote } from "@/components/EditNote/EditNote";
-import { MainLayout } from "@/components/MainLayout/MainLayout";
-import { useNote } from "@/hooks/Notes/useNote";
-import { useUser } from "@/hooks/User/useUser";
+import EditNote from "@/components/Note/EditNote/EditNote";
+import MainLayout from "@/components/MainLayout/MainLayout";
+import useNote from "@/hooks/Notes/useNote";
+import useUser from "@/hooks/User/useUser";
 import { Note } from "@/types/Note";
-import { saveNote } from "@/utils/saveNote";
+import saveNote from "@/utils/saveNote";
 import { useRouter } from "next/router";
 import { useState } from "react";
 

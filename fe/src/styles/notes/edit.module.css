@@ -9,6 +9,7 @@
 }
 
 .edit-btn > svg {
+  filter: grayscale(100%) contrast(2);
   width: 1.3rem;
   height: 1.3rem;
 }
@@ -27,6 +28,10 @@
   margin-left: 0.1rem;
 }
 
+.content-container-readonly {
+  gap: 0.25rem;
+}
+
 .edit-title,
 .display-title {
   height: 2.1rem;
@@ -40,9 +45,9 @@
   width: 100%;
 }
 
-.edit-contents,
-.display-contents {
+.edit-contents {
   width: 100%;
+  height: 10rem;
   resize: none;
   outline: none;
 }
@@ -50,10 +55,6 @@
 .edit-contents {
   border: 0.1rem solid lightblue;
   border-radius: 0.5rem;
-}
-
-.display-contents {
-  border: none;
 }
 
 .display-title {

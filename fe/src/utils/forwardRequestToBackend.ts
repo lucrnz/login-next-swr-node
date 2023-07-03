@@ -5,7 +5,7 @@ import {
 } from "@/types/Api";
 import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
-import { fetchBackend } from "./fetchBackend";
+import fetchBackend from "./fetchBackend";
 import { CustomFetchResult } from "./customFetch";
 
 type ForwardRequestToBackendOptions<T> = {
@@ -22,7 +22,7 @@ type ForwardRequestToBackendOptions<T> = {
   ) => Promise<unknown>;
 };
 
-export async function forwardRequestToBackend<T>({
+export default async function forwardRequestToBackend<T>({
   req,
   res,
   validMethod,

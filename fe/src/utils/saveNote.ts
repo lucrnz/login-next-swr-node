@@ -6,7 +6,7 @@ import {
   ApiStatusMessage
 } from "@/types/Api";
 
-export async function saveNote(note: Note) {
+export default async function saveNote(note: Note) {
   const { data: apiResult } = await fetchApi<
     ApiResponsePostNote,
     ApiBodyPostNote

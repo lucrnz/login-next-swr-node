@@ -2,13 +2,13 @@ import styles from "@/styles/login.module.css";
 import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/User";
-import { MainLayout } from "@/components/MainLayout/MainLayout";
-import { loginAction } from "@/utils/loginAction";
+import MainLayout from "@/components/MainLayout/MainLayout";
+import loginAction from "@/utils/loginAction";
 import { useRouter } from "next/router";
 import { defaultPageLoggedIn } from "@/config";
-import { useUser } from "@/hooks/User/useUser";
-import { Card } from "@/components/Card/Card";
-import { useFormValidation } from "@/hooks/useFormValidation";
+import useUser from "@/hooks/User/useUser";
+import Card from "@/components/Card/Card";
+import useFormValidation from "@/hooks/useFormValidation";
 
 const Field = {
   Email: "Email",

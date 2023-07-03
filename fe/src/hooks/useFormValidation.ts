@@ -15,10 +15,10 @@ type ParentRefType =
   | RefObject<HTMLElement | null>
   | RefObject<HTMLElement | undefined>;
 
-export const useFormValidation = <F extends Record<string, unknown>>(
+export default function useFormValidation<F extends Record<string, unknown>>(
   validations: Validations<F>,
   parentReference: ParentRefType
-) => {
+) {
   type Field = keyof F;
 
   const [validationErrors, setValidationErrors] = useState<[Field, string][]>(
@@ -127,4 +127,4 @@ export const useFormValidation = <F extends Record<string, unknown>>(
     getValidationErrorsForField,
     getInputValues
   };
-};
+}

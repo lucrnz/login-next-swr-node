@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from "react";
-import { useUser } from "@/hooks/User/useUser";
-import { useNoteList } from "@/hooks/Notes/useNoteList";
-import { useNote } from "@/hooks/Notes/useNote";
+import useUser from "@/hooks/User/useUser";
+import useNoteList from "@/hooks/Notes/useNoteList";
+import useNote from "@/hooks/Notes/useNote";
 import { Note } from "@/types/Note";
-import { DisplayNote } from "../DisplayNote/DisplayNote";
+import DisplayNote from "./DisplayNote";
 
 type NoteProps = {
   noteId: Note["id"];
@@ -16,10 +16,10 @@ function FetchNote({ noteId }: NoteProps) {
     return <p>Loading...</p>;
   }
 
-  return <DisplayNote note={note} addLink={true} />;
+  return <DisplayNote note={note} addLink={true} collapse={true} />;
 }
 
-export function Notes({
+export default function DisplayNoteList({
   wrapper: providedWrapper
 }: {
   wrapper?: React.FC<PropsWithChildren<unknown>>;

@@ -1,0 +1,14 @@
+.display-note {
+  display: flex;
+  flex-direction: column;
+  /* gap: 0.5rem; */
+}
+
+.display-note > p {
+  margin: 0;
+}
+
+.empty-paragraph {
+  color: transparent;
+  user-select: none;
+}

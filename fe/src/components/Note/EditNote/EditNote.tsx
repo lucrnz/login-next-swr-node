@@ -1,29 +1,10 @@
 import { Note } from "@/types/Note";
-import { Card } from "../Card/Card";
-import EditIcon from "@/assets/Icons/edit26.svg";
-import styles from "./EditNote.module.css";
-import { ChangeEvent, useCallback, useState } from "react";
-import { awaitCallbackIfNeeded } from "@/utils/awaitCallbackIfNeeded";
-
-// @TODO: Move to helper function
-function getTextAreaHeightRem(value: string) {
-  const fontSizeRem = 1;
-  const lineHeight = 1.15;
-  const adjustFactor = 1.2;
-  const lines = value.split("\n");
-
-  const totalLineLength = lines.reduce((total, item) => total + item.length, 0);
-  const averageLineLength = totalLineLength / lines.length;
-  const lineLengthFactor = averageLineLength * 0.008;
-
-  let result =
-    lines.length * lineHeight * lineLengthFactor * fontSizeRem * adjustFactor;
-
-  result = result < 2 ? 2 : result;
-
-  console.log("height (in rem)", result);
-  return `${result}rem`;
-}
+import Card from "@/components/Card/Card";
+import PencilIcon from "@/assets/Icons/pencil.svg";
+import styles from "@/styles/notes/edit.module.css";
+import { ChangeEvent, useState } from "react";
+import awaitCallbackIfNeeded from "@/utils/awaitCallbackIfNeeded";
+import DisplayNoteContents from "@/components/Note/DisplayNote/DisplayNoteContents";
 
 function EditButton({
   onClick
@@ -44,20 +25,22 @@ function EditButton({
       role="button"
       onClick={clickHandler}
     >
-      <EditIcon />
+      <PencilIcon />
     </a>
   );
 }
 
-export function EditNote({
-  note: initialNote,
-  onSave,
-  isLoading
-}: {
+type EditNoteProps = {
   note: Note;
   onSave: (note: Note) => Promise<unknown> | unknown;
   isLoading: boolean;
-}) {
+};
+
+export default function EditNote({
+  note: initialNote,
+  onSave,
+  isLoading
+}: EditNoteProps) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingContents, setIsEditingContents] = useState(false);
   const [editTitle, setEditTitle] = useState(initialNote.title);
@@ -143,44 +126,37 @@ export function EditNote({
             </>
           )}
         </div>
-        <div className={styles["content-container"]}>
-          {isEditingContents ? (
+        {isEditingContents ? (
+          <div className={styles["content-container"]}>
             <textarea
               className={styles["edit-contents"]}
               onBlur={inputContentsExitEditSave}
               onChange={handleInputContentsOnChange}
               autoFocus
               defaultValue={editContents}
-              style={{
-                height: getTextAreaHeightRem(editContents)
+            />
+          </div>
+        ) : (
+          <div
+            className={[
+              styles["content-container"],
+              styles["content-container-readonly"]
+            ].join(" ")}
+          >
+            <DisplayNoteContents
+              collapse={false}
+              contents={note.contents}
+              onDoubleClick={(_) => {
+                setIsEditingContents((_) => true);
               }}
             />
-          ) : (
-            <>
-              <textarea
-                className={styles["display-contents"]}
-                readOnly
-                onDoubleClick={() => {
-                  setIsEditingContents((_) => true);
-                }}
-                value={note.contents}
-                onChange={(event) => {
-                  event.target.style["height"] = getTextAreaHeightRem(
-                    event.target.value
-                  );
-                }}
-                style={{
-                  height: getTextAreaHeightRem(note.contents)
-                }}
-              />
-              <EditButton
-                onClick={(_) => {
-                  setIsEditingContents((_) => true);
-                }}
-              />
-            </>
-          )}
-        </div>
+            <EditButton
+              onClick={(_) => {
+                setIsEditingContents((_) => true);
+              }}
+            />
+          </div>
+        )}
       </div>
     </Card>
   );

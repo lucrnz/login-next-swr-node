@@ -1,4 +1,4 @@
-export function greetUserByTime() {
+export default function greetUserByTime() {
   const currentTime = new Date();
   const currentHour = currentTime.getHours();
 

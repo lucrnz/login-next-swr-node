@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { getApiFetcher } from "@/utils/api";
 import { Note } from "@/types/Note";
 
-export const useNoteList = () => {
+function useNoteList() {
   const fetcher = getApiFetcher<Note["id"][], never>({
     method: "GET"
   });
@@ -22,4 +22,6 @@ export const useNoteList = () => {
     mutate,
     error
   };
-};
+}
+
+export default useNoteList;
