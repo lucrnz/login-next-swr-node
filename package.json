@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "npm --prefix=./be install && npm --prefix=./fe install",
-    "start": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\"",
+    "start": "concurrently \"npm --prefix=./be run dev\" \"npm --prefix=./fe run dev\"",
     "prepare": "husky install"
   },
   "author": "lucdev<lucdev.net>",
