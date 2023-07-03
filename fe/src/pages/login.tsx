@@ -1,4 +1,5 @@
 import styles from "@/styles/login.module.css";
+import commonStyles from "@/styles/common.module.css";
 import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/User";
@@ -94,7 +95,7 @@ export default function LoginPage() {
       <Card classList={[styles["main-card"]]}>
         <div className={styles["main-container"]}>
           {message.length > 0 && (
-            <span className={styles["header-message"]}>{message}</span>
+            <span className={commonStyles["header-message"]}>{message}</span>
           )}
           <span className={styles["title"]}>Welcome - Login</span>
           {isRedirecting ? (
@@ -115,7 +116,7 @@ export default function LoginPage() {
                 />
                 {getValidationErrorsForField(Field.Email).map(
                   (message, index) => (
-                    <span key={index} className={styles["text-error"]}>
+                    <span key={index} className={commonStyles["text-error"]}>
                       {message}
                     </span>
                   )
@@ -131,14 +132,14 @@ export default function LoginPage() {
                 />
                 {getValidationErrorsForField(Field.Password).map(
                   (message, index) => (
-                    <span key={index} className={styles["text-error"]}>
+                    <span key={index} className={commonStyles["text-error"]}>
                       {message}
                     </span>
                   )
                 )}
               </div>
               {loginError !== null && (
-                <span className={styles["text-error"]}>{loginError}</span>
+                <span className={commonStyles["text-error"]}>{loginError}</span>
               )}
               <input
                 type="submit"

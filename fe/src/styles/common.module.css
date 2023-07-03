@@ -8,3 +8,18 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.text-error {
+  color: red;
+}
+
+.header-message {
+  width: 100%;
+  color: rgb(185, 28, 28);
+  background-color: rgba(185, 28, 28, 0.1);
+  padding: 0.75rem;
+}
+
+.blue-text {
+  color: rgb(59, 73, 223);
+}

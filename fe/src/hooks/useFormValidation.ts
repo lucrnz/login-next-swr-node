@@ -128,3 +128,7 @@ export default function useFormValidation<F extends Record<string, unknown>>(
     getInputValues
   };
 }
+
+export function emptyStringValidation(value: string) {
+  return value.trim().length === 0;
+}
