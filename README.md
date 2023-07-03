@@ -46,6 +46,13 @@ npm install
 npm start
 ```
 
+## Assets Attribution
+
+The front-end code imports the following icons:
+
+- [Notebook](https://www.flaticon.com/free-icons/notebook) icon created by Freepik - Flaticon
+- [Pencil](https://pictogrammers.com/library/mdi/icon/pencil/) icon by Google - Material design
+
 ## Deployment
 
 If you choose to use containers, check out the [containers guide](./doc/deploy/containers.md).
