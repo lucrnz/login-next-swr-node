@@ -8,6 +8,15 @@ function cookiesToHeaderString(cookies: NextApiRequest["cookies"]) {
   return cookieString;
 }
 
+function urlEncodeObject(data: { [key: string]: any }): string {
+  return Object.entries(data)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+    )
+    .join("&");
+}
+
 function isAbsoluteURL(url: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/.test(url);
 }
@@ -19,6 +28,7 @@ export type CustomFetchOptions<RequestBodyType> = {
   params?: { [key: string]: string };
   body?: RequestBodyType;
   method?: NextApiRequest["method"];
+  urlEncoded?: boolean;
 };
 
 export type CustomFetchResult<ResultType> = {
@@ -34,8 +44,10 @@ export default async function customFetch<ResultType, RequestBodyType>({
   cookies,
   params,
   body,
-  method
+  method,
+  urlEncoded: providedUrlEncoded
 }: CustomFetchOptions<RequestBodyType>) {
+  const urlEncoded = providedUrlEncoded ? providedUrlEncoded : false;
   try {
     const urlObj =
       url instanceof URL || isAbsoluteURL(url)
@@ -54,7 +66,9 @@ export default async function customFetch<ResultType, RequestBodyType>({
     const defaultConfig: RequestInit = {
       method: method ?? "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": urlEncoded
+          ? "application/x-www-form-urlencoded"
+          : "application/json"
       },
       credentials: "include"
     };
@@ -80,13 +94,17 @@ export default async function customFetch<ResultType, RequestBodyType>({
     }
 
     if (body) {
-      requestInit.body = JSON.stringify(body);
+      requestInit.body = urlEncoded
+        ? urlEncodeObject(body)
+        : JSON.stringify(body);
     }
 
     const fetchResponse = await fetch(urlObj, requestInit);
     const { headers, ok, status } = fetchResponse;
 
     const dataAsText = await fetchResponse.text();
+
+    // @TODO: Check for content-type
 
     const data = JSON.parse(dataAsText) as ResultType;
 

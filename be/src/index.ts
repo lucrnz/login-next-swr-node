@@ -13,6 +13,7 @@ import { postNoteEndpointHandler } from "./endpoint/note/post.js";
 import { getNoteEndpointHandler } from "./endpoint/note/get.js";
 import { getNoteListEndpointHandler } from "./endpoint/note/list/get.js";
 import { deleteNoteEndpointHandler } from "./endpoint/note/delete.js";
+import { indexEndpointHandler } from "./endpoint/index.js";
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+
+app.get("/", indexEndpointHandler);
 
 app.post("/login", loginEndpointHandler);
 app.post("/logout", logoutEndpointHandler);

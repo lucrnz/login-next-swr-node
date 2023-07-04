@@ -6,10 +6,12 @@ import { UserWithPassword } from "@/types/User";
 import MainLayout from "@/components/MainLayout/MainLayout";
 import loginAction from "@/utils/loginAction";
 import { useRouter } from "next/router";
-import { defaultPageLoggedIn } from "@/config";
+import { defaultPageLoggedIn, enableCaptcha } from "@/config";
 import useUser from "@/hooks/User/useUser";
 import Card from "@/components/Card/Card";
 import useFormValidation from "@/hooks/useFormValidation";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { fetchApi } from "@/utils/api";
 
 const Field = {
   Email: "Email",
@@ -29,20 +31,26 @@ const validations = {
   }
 };
 
+const captchaSiteKey = enableCaptcha
+  ? process.env["NEXT_PUBLIC_HCAPTCHA_SITEKEY"]!
+  : "";
+
 export default function LoginPage() {
   const router = useRouter();
+
   const formRef = useRef<HTMLFormElement | null>(null);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const { loggedOut, loading: loadingUser } = useUser();
-
+  const [captchaVerified, setCaptchaVerified] = useState(!enableCaptcha);
   const providedMessage = router.query?.message || "";
-
-  const message = providedMessage
-    ? Array.isArray(providedMessage)
-      ? providedMessage.join(" ")
-      : providedMessage
-    : "";
+  const [message, setMessage] = useState(
+    providedMessage
+      ? Array.isArray(providedMessage)
+        ? providedMessage.join(" ")
+        : providedMessage
+      : ""
+  );
 
   const {
     validateField,
@@ -71,6 +79,10 @@ export default function LoginPage() {
       return;
     }
 
+    if (enableCaptcha && !captchaVerified) {
+      return setMessage((_) => "Invalid captcha, please try again.");
+    }
+
     const values = getInputValues();
     const userData = {
       email: values[Field.Email],
@@ -83,6 +95,33 @@ export default function LoginPage() {
       setIsRedirecting((_) => true);
     } else {
       setLoginError(loginResult.data.message);
+    }
+  }
+
+  async function captchaOnVerify(token: string, _: string) {
+    const body = { token };
+    let success = false;
+
+    setMessage((_) => "");
+
+    try {
+      const result = await fetchApi<unknown, typeof body>({
+        method: "POST",
+        url: "verifycaptcha",
+        body
+      });
+      success = result.ok;
+    } catch (err) {
+      console.error(err);
+      success = false;
+    } finally {
+      if (success) {
+        setCaptchaVerified((_) => true);
+      } else {
+        setMessage(
+          (_) => "An unexpected error has occurred, please try again later."
+        );
+      }
     }
   }
 
@@ -141,11 +180,19 @@ export default function LoginPage() {
               {loginError !== null && (
                 <span className={commonStyles["text-error"]}>{loginError}</span>
               )}
-              <input
-                type="submit"
-                value="Login"
-                className={styles["submit-btn"]}
-              />
+              <div>
+                {enableCaptcha && (
+                  <HCaptcha
+                    sitekey={captchaSiteKey}
+                    onVerify={captchaOnVerify}
+                  />
+                )}
+                <input
+                  type="submit"
+                  value="Login"
+                  className={styles["submit-btn"]}
+                />
+              </div>
             </form>
           )}
         </div>

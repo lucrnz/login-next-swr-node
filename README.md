@@ -39,12 +39,30 @@ BE_URL=http://localhost:3002
 
 This variable must reflect the URL of the backend.
 
+For [hCaptcha](https://hcaptcha.com/) support, set the following variables:
+
+```
+NEXT_PUBLIC_ENABLE_CAPTCHA=true
+NEXT_PUBLIC_HCAPTCHA_SITEKEY=<hcaptcha_sitekey>
+HCAPTCHA_SECRET=<hcaptcha_secret>
+```
+
 On the **project root** folder:
 
 ```sh
 npm install
 npm start
 ```
+
+If you need local HTTPS for the development server you might used the supplied [Caddyfile](./Caddyfile)
+
+```sh
+caddy run --config Caddyfile
+```
+
+Then access the site using the URL `login-swr.localhost`
+
+_Note_: Firefox users need to enable the flag `security.enterprise_roots.enabled` to `true` by accessing `about:config` in the URL bar.
 
 ## Assets Attribution
 
