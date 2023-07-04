@@ -36,9 +36,7 @@ export default function useFormValidation<F extends Record<string, unknown>>(
     const { id, getValue } = validation;
 
     if (getValue) {
-      const value = getValue(parentElement);
-      console.log({ value });
-      return value;
+      return getValue(parentElement);
     }
 
     if (id && id.length > 0) {
@@ -46,13 +44,7 @@ export default function useFormValidation<F extends Record<string, unknown>>(
         | HTMLInputElement
         | undefined;
 
-      if (!element) {
-        return "";
-      }
-
-      const value = element.value;
-      console.log({ value });
-      return element.value;
+      return element ? element.value : "";
     }
 
     return "";
