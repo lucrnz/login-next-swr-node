@@ -52,6 +52,7 @@ The front-end needs an aditional step:
 
 ```sh
 ln -s $PWD/fe/.next/static $PWD/fe/.next/standalone/.next/static
+cp -av $PWD/fe/public $PWD/fe/.next/standalone/
 ```
 
 ## Setup systemd unit services
