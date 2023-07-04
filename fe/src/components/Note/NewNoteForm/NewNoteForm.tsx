@@ -1,5 +1,4 @@
 import { Note } from "@/types/Note";
-import Card from "@/components/Card/Card";
 import styles from "@/styles/notes/new.module.css";
 import commonStyles from "@/styles/common.module.css";
 import { useRef, useState } from "react";
@@ -8,6 +7,7 @@ import useFormValidation, {
 } from "@/hooks/useFormValidation";
 import awaitCallbackIfNeeded from "@/utils/awaitCallbackIfNeeded";
 import saveNote from "@/utils/saveNote";
+import { ApiResponsePostNote } from "@/types/Api";
 
 const Field = {
   Title: "Title",
@@ -65,7 +65,7 @@ export default function NewNoteForm({
 
     const values = getInputValues();
 
-    const note = {
+    let note = {
       id: "",
       title: values[Field.Title],
       contents: values[Field.Contents]
@@ -73,11 +73,11 @@ export default function NewNoteForm({
 
     setIsSaving((_) => true);
 
-    let success = false;
+    let data: ApiResponsePostNote | null = null;
     try {
-      await saveNote(note);
-      success = true;
+      data = await saveNote(note);
     } catch (err) {
+      data = null;
       const error = err as Error;
       setSaveError(error.message);
       if (onSaveError) {
@@ -85,8 +85,12 @@ export default function NewNoteForm({
       }
     } finally {
       setIsSaving((_) => false);
+    }
 
-      if (success && onSaveSuccess) {
+    if (data) {
+      note.id = data.noteId;
+
+      if (onSaveSuccess) {
         await awaitCallbackIfNeeded(onSaveSuccess, note);
       }
     }
