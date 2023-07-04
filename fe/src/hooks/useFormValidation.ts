@@ -2,8 +2,9 @@ import { RefObject, useState } from "react";
 
 type ValidationValue = {
   validate: (value: string) => Boolean;
-  id: string;
   message: string;
+  id?: string;
+  getValue?: (parentElement: HTMLElement) => string;
 };
 
 type Validations<F> = {
@@ -25,6 +26,38 @@ export default function useFormValidation<F extends Record<string, unknown>>(
     []
   );
 
+  function getValidationFieldValue(validation: ValidationValue) {
+    if (!parentReference.current) {
+      return "";
+    }
+
+    const parentElement = parentReference.current;
+
+    const { id, getValue } = validation;
+
+    if (getValue) {
+      const value = getValue(parentElement);
+      console.log({ value });
+      return value;
+    }
+
+    if (id && id.length > 0) {
+      const element = parentElement.querySelector(`#${id}`) as
+        | HTMLInputElement
+        | undefined;
+
+      if (!element) {
+        return "";
+      }
+
+      const value = element.value;
+      console.log({ value });
+      return element.value;
+    }
+
+    return "";
+  }
+
   function validateInput(validation: ValidationValue) {
     if (!parentReference.current) {
       return [];
@@ -32,17 +65,10 @@ export default function useFormValidation<F extends Record<string, unknown>>(
 
     const errors: string[] = [];
 
-    const { validate, message, id } = validation;
+    const value = getValidationFieldValue(validation);
+    const { validate, message } = validation;
 
-    const element = parentReference.current.querySelector(`#${id}`) as
-      | HTMLInputElement
-      | undefined;
-
-    if (!element) {
-      return [];
-    }
-
-    if (!validate(element.value)) {
+    if (!validate(value)) {
       errors.push(message);
     }
 
@@ -102,20 +128,8 @@ export default function useFormValidation<F extends Record<string, unknown>>(
     const entries = Object.entries(validations);
     const values = {} as { [key in Field]: string };
 
-    for (const [field, { id }] of entries) {
-      const value = (() => {
-        if (!parentReference.current) {
-          return "";
-        }
-
-        const element = parentReference.current.querySelector(`#${id}`) as
-          | HTMLInputElement
-          | undefined;
-
-        return element ? element.value : "";
-      })();
-
-      values[field as Field] = value;
+    for (const [field, validationValue] of entries) {
+      values[field as Field] = getValidationFieldValue(validationValue);
     }
 
     return values;
@@ -130,5 +144,5 @@ export default function useFormValidation<F extends Record<string, unknown>>(
 }
 
 export function emptyStringValidation(value: string) {
-  return value.trim().length === 0;
+  return value.trim().length > 0;
 }
