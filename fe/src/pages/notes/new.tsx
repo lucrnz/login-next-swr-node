@@ -2,7 +2,7 @@ import useUser from "@/hooks/User/useUser";
 import Card from "@/components/Card/Card";
 import MainLayout from "@/components/MainLayout/MainLayout";
 import styles from "@/styles/notes/index.module.css";
-import NewNote from "@/components/Note/NewNote/NewNote";
+import NewNoteForm from "@/components/Note/NewNoteForm/NewNoteForm";
 import { useRouter } from "next/router";
 
 export default function NewNotePage() {
@@ -24,11 +24,13 @@ export default function NewNotePage() {
         <Card>
           <h2 className={styles["subtitle"]}>Create a new note</h2>
         </Card>
-        <NewNote
-          onSaveSuccess={async (_) => {
-            await router.push("/notes");
-          }}
-        />
+        <Card>
+          <NewNoteForm
+            onSaveSuccess={async (_) => {
+              await router.push("/notes");
+            }}
+          />
+        </Card>
       </div>
     </MainLayout>
   );

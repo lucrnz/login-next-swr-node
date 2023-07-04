@@ -1,5 +1,4 @@
 import { Note } from "@/types/Note";
-import Card from "@/components/Card/Card";
 import PencilIcon from "@/assets/Icons/pencil.svg";
 import styles from "@/styles/notes/edit.module.css";
 import { ChangeEvent, useState } from "react";
@@ -90,74 +89,72 @@ export default function EditNote({
   }
 
   return (
-    <Card>
-      <div className={styles["main-container"]}>
-        {isLoading && <p>Loading...</p>}
-        <div className={styles["title-container"]}>
-          {isEditingTitle ? (
-            <input
-              type="text"
-              className={styles["edit-title"]}
-              value={editTitle}
-              onChange={handleInputTitleOnChange}
-              onBlur={inputTitleExitEditSave}
-              onKeyUp={(event) => {
-                if (event.code === "Enter" || event.code === "NumpadEnter") {
-                  inputTitleExitEditSave();
-                }
-              }}
-              autoFocus
-            ></input>
-          ) : (
-            <>
-              <h2
-                className={styles["display-title"]}
-                onDoubleClick={() => {
-                  setIsEditingTitle((_) => true);
-                }}
-              >
-                {note.title}
-              </h2>
-              <EditButton
-                onClick={(_) => {
-                  setIsEditingTitle((_) => true);
-                }}
-              />
-            </>
-          )}
-        </div>
-        {isEditingContents ? (
-          <div className={styles["content-container"]}>
-            <textarea
-              className={styles["edit-contents"]}
-              onBlur={inputContentsExitEditSave}
-              onChange={handleInputContentsOnChange}
-              autoFocus
-              defaultValue={editContents}
-            />
-          </div>
+    <div className={styles["edit-note-container"]}>
+      {isLoading && <p>Loading...</p>}
+      <div className={styles["title-container"]}>
+        {isEditingTitle ? (
+          <input
+            type="text"
+            className={styles["edit-title"]}
+            value={editTitle}
+            onChange={handleInputTitleOnChange}
+            onBlur={inputTitleExitEditSave}
+            onKeyUp={(event) => {
+              if (event.code === "Enter" || event.code === "NumpadEnter") {
+                inputTitleExitEditSave();
+              }
+            }}
+            autoFocus
+          ></input>
         ) : (
-          <div
-            className={[
-              styles["content-container"],
-              styles["content-container-readonly"]
-            ].join(" ")}
-          >
-            <DisplayNoteContents
-              collapse={false}
-              contents={note.contents}
-              onDoubleClick={(_) => {
-                setIsEditingContents((_) => true);
+          <>
+            <h2
+              className={styles["display-title"]}
+              onDoubleClick={() => {
+                setIsEditingTitle((_) => true);
               }}
-            />
+            >
+              {note.title}
+            </h2>
             <EditButton
               onClick={(_) => {
-                setIsEditingContents((_) => true);
+                setIsEditingTitle((_) => true);
               }}
             />
-          </div>
+          </>
         )}
       </div>
-    </Card>
+      {isEditingContents ? (
+        <div className={styles["content-container"]}>
+          <textarea
+            className={styles["edit-contents"]}
+            onBlur={inputContentsExitEditSave}
+            onChange={handleInputContentsOnChange}
+            autoFocus
+            defaultValue={editContents}
+          />
+        </div>
+      ) : (
+        <div
+          className={[
+            styles["content-container"],
+            styles["content-container-readonly"]
+          ].join(" ")}
+        >
+          <DisplayNoteContents
+            collapse={false}
+            contents={note.contents}
+            onDoubleClick={(_) => {
+              setIsEditingContents((_) => true);
+            }}
+          />
+          <EditButton
+            onClick={(_) => {
+              setIsEditingContents((_) => true);
+            }}
+          />
+        </div>
+      )}
+    </div>
   );
 }

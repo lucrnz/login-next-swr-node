@@ -1,6 +1,6 @@
 import { Note } from "@/types/Note";
 import Card from "@/components/Card/Card";
-import styles from "@/styles/notes/edit.module.css";
+import styles from "@/styles/notes/new.module.css";
 import commonStyles from "@/styles/common.module.css";
 import { useRef, useState } from "react";
 import useFormValidation, {
@@ -32,7 +32,10 @@ type NewNoteProps = {
   onSaveError?: (err: Error) => Promise<unknown> | unknown;
 };
 
-export default function NewNote({ onSaveSuccess, onSaveError }: NewNoteProps) {
+export default function NewNoteForm({
+  onSaveSuccess,
+  onSaveError
+}: NewNoteProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -90,50 +93,57 @@ export default function NewNote({ onSaveSuccess, onSaveError }: NewNoteProps) {
   }
 
   return (
-    <Card>
-      <div className={styles["main-container"]}>
-        <form ref={formRef} onSubmit={formSubmitEventHandler}>
-          <div className={styles["title-container"]}>
-            <label htmlFor="title">Title:</label>
-            <input
-              id="title"
-              type="text"
-              className={styles["edit-title"]}
-              onBlur={() => validateField(Field.Title)}
-              disabled={isSaving}
-            ></input>
-            {getValidationErrorsForField(Field.Title).map((message, index) => (
-              <span key={index} className={commonStyles["text-error"]}>
-                {message}
-              </span>
-            ))}
-          </div>
-          <div className={styles["content-container"]}>
-            <label htmlFor="contents">Contents:</label>
-            <textarea
-              id="contents"
-              className={styles["edit-contents"]}
-              onBlur={() => validateField(Field.Contents)}
-              disabled={isSaving}
-            />
-            {getValidationErrorsForField(Field.Contents).map(
-              (message, index) => (
-                <span key={index} className={commonStyles["text-error"]}>
-                  {message}
-                </span>
-              )
-            )}
-          </div>
-          {isSaving && (
-            <span className={commonStyles["blue-text"]}>
-              Saving your note, please wait ...
-            </span>
-          )}
-          {saveError !== null && (
-            <span className={commonStyles["text-error"]}>{saveError}</span>
-          )}
-        </form>
+    <form
+      ref={formRef}
+      onSubmit={formSubmitEventHandler}
+      className={styles["main-form"]}
+    >
+      <div>
+        <label htmlFor="title">Title:</label>
+        <input
+          id="title"
+          type="text"
+          onBlur={() => validateField(Field.Title)}
+          disabled={isSaving}
+          className={commonStyles["text-field"]}
+        ></input>
+        {getValidationErrorsForField(Field.Title).map((message, index) => (
+          <span key={index} className={commonStyles["text-error"]}>
+            {message}
+          </span>
+        ))}
       </div>
-    </Card>
+      <div>
+        <label htmlFor="contents">Contents:</label>
+        <textarea
+          id="contents"
+          onBlur={() => validateField(Field.Contents)}
+          disabled={isSaving}
+          className={commonStyles["text-field"]}
+        />
+        {getValidationErrorsForField(Field.Contents).map((message, index) => (
+          <span key={index} className={commonStyles["text-error"]}>
+            {message}
+          </span>
+        ))}
+      </div>
+      <div>
+        {isSaving && (
+          <span className={commonStyles["blue-text"]}>
+            Saving your note, please wait ...
+          </span>
+        )}
+        {saveError !== null && (
+          <span className={commonStyles["text-error"]}>{saveError}</span>
+        )}
+        <input
+          type="submit"
+          value="Save"
+          className={[commonStyles["button"], commonStyles["blue-button"]].join(
+            " "
+          )}
+        />
+      </div>
+    </form>
   );
 }
