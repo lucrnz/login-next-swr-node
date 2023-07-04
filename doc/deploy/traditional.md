@@ -37,9 +37,11 @@ npm --prefix ./be ci --frozen-lockfile
 npm --prefix ./fe ci --frozen-lockfile
 ```
 
-## Build the projects
+## Setup environment variables
 
-Please check the section on the [README](../../README.md) document to correctly setup the environment variables.
+Make sure to setup the environment variables, by following [this guide](../env-vars.md)
+
+## Build the projects
 
 ```sh
 npm --prefix ./be run build

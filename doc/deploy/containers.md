@@ -8,6 +8,10 @@ Setup your server, login via SSH and copy the repository tarball.
 
 I will be using a system user with id 1000 and group-id 1000, to avoid using the privileged root user.
 
+## Setup environment variables
+
+Make sure to setup the environment variables, by following [this guide](../env-vars.md)
+
 ## Build images
 
 ```sh
@@ -22,8 +26,6 @@ podman volume create login-swr-be-data
 ```
 
 ## Start backend service
-
-Create a `.env` on the `/be` directory file and setup the needed environment variables that are specified on the [README](../../README.md) document.
 
 ```sh
 ./be/scripts/run-container.sh
@@ -41,8 +43,6 @@ CONTAINER ID  IMAGE                          COMMAND               CREATED      
 ```
 
 ## Start front-end service
-
-Create a `.env.local` file on the `/fe` directory and setup the needed environment variables that are specified on the [README](../../README.md) document.
 
 ```sh
 ./fe/scripts/run-container.sh
