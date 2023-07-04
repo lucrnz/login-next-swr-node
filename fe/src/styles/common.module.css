@@ -23,3 +23,32 @@
 .blue-text {
   color: rgb(59, 73, 223);
 }
+
+.text-field,
+.button {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  border: 0.1rem solid #ccc;
+  outline: none;
+}
+
+.text-field:focus,
+.text-field:hover {
+  border: 0.1rem solid rgb(59, 73, 223);
+}
+
+.button {
+  padding: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.blue-button:hover {
+  background-color: rgb(55, 68, 208);
+}
+
+.blue-button {
+  background-color: rgb(59, 73, 223);
+  color: rgb(249, 249, 249);
+}

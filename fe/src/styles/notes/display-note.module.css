@@ -1,7 +1,6 @@
 .display-note {
   display: flex;
   flex-direction: column;
-  /* gap: 0.5rem; */
 }
 
 .display-note > p {
@@ -9,6 +8,11 @@
 }
 
 .empty-paragraph {
+  min-height: 1rem;
   color: transparent;
   user-select: none;
+}
+
+.read-more-link {
+  margin-top: 1rem;
 }
