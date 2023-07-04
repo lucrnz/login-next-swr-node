@@ -19,8 +19,10 @@ export default function DisplayNoteContents({
   onDoubleClick
 }: DisplayNoteContentsProps) {
   const maxLines = displayNoteMaxLines;
-  const [isCollapsed, setIsCollapsed] = useState(collapse);
   const lines = contents.split("\n");
+
+  const shouldCollapse = collapse && lines.length >= maxLines;
+  const [isCollapsed, setIsCollapsed] = useState(shouldCollapse);
 
   const contentLines = isCollapsed ? lines.slice(0, maxLines) : lines;
 
@@ -30,19 +32,17 @@ export default function DisplayNoteContents({
         value.length > 0 ? (
           <p key={index}>{value}</p>
         ) : (
-          <p
+          <div
             key={index}
             className={styles["empty-paragraph"]}
             aria-hidden={true}
-          >
-            {"."}
-          </p>
+          ></div>
         )
       )}
-      {isCollapsed && contents.length > maxLines && (
+      {isCollapsed && (
         <a
           href="#"
-          className={commonStyles["link"]}
+          className={[commonStyles["link"], styles["read-more-link"]].join(" ")}
           onClick={(event) => {
             event.preventDefault();
             setIsCollapsed(false);
