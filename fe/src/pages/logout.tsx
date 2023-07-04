@@ -20,7 +20,7 @@ export default function LogoutPage() {
   }, [loggedOut, router, mutate]);
 
   return (
-    <MainLayout>
+    <MainLayout disableRedirect={true}>
       <Card>
         <p>You are being signed out, please wait for the redirection.</p>
       </Card>
