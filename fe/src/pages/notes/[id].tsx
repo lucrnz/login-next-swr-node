@@ -5,7 +5,20 @@ import useUser from "@/hooks/User/useUser";
 import { Note } from "@/types/Note";
 import saveNote from "@/utils/saveNote";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { PropsWithChildren, useState } from "react";
+import Card from "@/components/Card/Card";
+
+type LayoutProps = PropsWithChildren<{
+  title: string;
+}>;
+
+function Layout({ children, title }: LayoutProps) {
+  return (
+    <MainLayout title={title}>
+      <Card>{children}</Card>
+    </MainLayout>
+  );
+}
 
 export default function NoteIdPage() {
   const router = useRouter();
@@ -16,25 +29,25 @@ export default function NoteIdPage() {
 
   if (loggedOut || !user || loginExpired) {
     return (
-      <MainLayout title="Note">
+      <Layout title="Note">
         <p>Please log in to visit this page.</p>
-      </MainLayout>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <MainLayout title="Error">
+      <Layout title="Error">
         <p>{error.message}</p>
-      </MainLayout>
+      </Layout>
     );
   }
 
   if (loadingUser || loadingNote || !note) {
     return (
-      <MainLayout title="Note">
+      <Layout title="Note">
         <p>Loading, please wait...</p>
-      </MainLayout>
+      </Layout>
     );
   }
 
@@ -45,8 +58,8 @@ export default function NoteIdPage() {
   }
 
   return (
-    <MainLayout title={note.title}>
+    <Layout title={note.title}>
       <EditNote note={note} onSave={onSaveNote} isLoading={isSavingNote} />
-    </MainLayout>
+    </Layout>
   );
 }

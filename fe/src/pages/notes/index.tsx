@@ -14,7 +14,9 @@ export default function NotesPage() {
   if (loggedOut || !user) {
     return (
       <MainLayout title={title}>
-        <p>Please log in to visit this page.</p>
+        <Card>
+          <p>Please log in to visit this page.</p>
+        </Card>
       </MainLayout>
     );
   }
@@ -31,7 +33,9 @@ export default function NotesPage() {
             Create a new note
           </Link>
         </Card>
-        <DisplayNoteList wrapper={Card} />
+        <div className={styles["note-list"]}>
+          <DisplayNoteList wrapper={Card} />
+        </div>
       </div>
     </MainLayout>
   );

@@ -1,3 +1,4 @@
+import Card from "@/components/Card/Card";
 import MainLayout from "@/components/MainLayout/MainLayout";
 import useUser from "@/hooks/User/useUser";
 import logoutAction from "@/utils/logoutAction";
@@ -20,7 +21,9 @@ export default function LogoutPage() {
 
   return (
     <MainLayout>
-      <p>You are being signed out, please wait for the redirection.</p>
+      <Card>
+        <p>You are being signed out, please wait for the redirection.</p>
+      </Card>
     </MainLayout>
   );
 }

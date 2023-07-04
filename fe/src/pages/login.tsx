@@ -150,7 +150,7 @@ export default function LoginPage() {
                 <input
                   id="email"
                   type="email"
-                  className={styles["text-field"]}
+                  className={commonStyles["text-field"]}
                   onBlur={() => validateField(Field.Email)}
                 />
                 {getValidationErrorsForField(Field.Email).map(
@@ -166,7 +166,7 @@ export default function LoginPage() {
                 <input
                   id="password"
                   type="password"
-                  className={styles["text-field"]}
+                  className={commonStyles["text-field"]}
                   onBlur={() => validateField(Field.Password)}
                 />
                 {getValidationErrorsForField(Field.Password).map(
@@ -190,7 +190,10 @@ export default function LoginPage() {
                 <input
                   type="submit"
                   value="Login"
-                  className={styles["submit-btn"]}
+                  className={[
+                    commonStyles["button"],
+                    commonStyles["blue-button"]
+                  ].join(" ")}
                 />
               </div>
             </form>
