@@ -8,10 +8,8 @@ export default async function fetchBackend<ResultType, RequestBodyType>({
   body,
   method
 }: CustomFetchOptions<RequestBodyType>) {
-  const backendUrl = process.env["BE_URL"];
-  console.log("backendUrl", backendUrl);
   return await customFetch<ResultType, RequestBodyType>({
-    url: `${backendUrl}/${url}`,
+    url: `${process.env["BE_URL"]}/${url}`,
     body,
     config,
     cookies,
