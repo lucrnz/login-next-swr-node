@@ -41,7 +41,7 @@ export default function DisplayNoteList({
   const Wrapper = providedWrapper ? providedWrapper : React.Fragment;
 
   return (
-    <div>
+    <>
       {noteList.length > 0 ? (
         noteList.map((noteId, index) => (
           <Wrapper key={index}>
@@ -63,6 +63,6 @@ export default function DisplayNoteList({
           </p>
         </Wrapper>
       )}
-    </div>
+    </>
   );
 }
