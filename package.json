@@ -1,21 +1,24 @@
 {
-  "name": "http-only-practice",
+  "name": "login-swr",
+  "workspaces": [
+    "be",
+    "fe"
+  ],
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "npm --prefix=./be install && npm --prefix=./fe install",
     "start": "concurrently \"npm --prefix=./be run dev\" \"npm --prefix=./fe run dev\"",
     "prepare": "husky install"
   },
   "author": "lucdev<lucdev.net>",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.0.1",
+    "concurrently": "^8.2.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.2",
-    "prettier": "2.8.8"
+    "lint-staged": "^13.2.3",
+    "prettier": "3.0.0"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
