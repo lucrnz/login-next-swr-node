@@ -33,8 +33,8 @@ npm --version
 Navigate to the source project directory and run:
 
 ```sh
-npm --prefix ./be ci --frozen-lockfile
-npm --prefix ./fe ci --frozen-lockfile
+npm -w be ci --frozen-lockfile
+npm -w fe ci --frozen-lockfile
 ```
 
 ## Setup environment variables
@@ -44,8 +44,8 @@ Make sure to setup the environment variables, by following [this guide](../env-v
 ## Build the projects
 
 ```sh
-npm --prefix ./be run build
-npm --prefix ./fe run build
+npm -w be run build
+npm -w fe run build
 ```
 
 The front-end needs an aditional step:

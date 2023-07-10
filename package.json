@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm --prefix=./be run dev\" \"npm --prefix=./fe run dev\"",
+    "start": "concurrently \"npm -w be run dev\" \"npm -w fe run dev\"",
     "prepare": "husky install"
   },
   "author": "lucdev<lucdev.net>",
