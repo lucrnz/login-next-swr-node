@@ -18,7 +18,7 @@ import styles from "@/styles/login.module.css";
 import commonStyles from "@/styles/common.module.css";
 import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
-import { UserWithPassword } from "@/types/User";
+import { UserWithPassword } from "@/types/Entities";
 import MainLayout from "@/components/MainLayout/MainLayout";
 import loginAction from "@/utils/loginAction";
 import { useRouter } from "next/router";
