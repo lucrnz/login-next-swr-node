@@ -1,12 +1,28 @@
-import { Response } from "express";
-import { ApiResponse, ApiStatusMessage } from "../../../types/Api.js";
-import { AuthenticatedRequest } from "../../../types/AuthenticatedRequest.js";
-import { StatusCode } from "status-code-enum";
-import { listNotesForUser } from "../../../lib/note.js";
-import { Note } from "../../../types/Note.js";
-import { newStatusMessage } from "../../../util/newStatusMessage.js";
+/*
+ * Copyright 2023 lucdev<lucdev.net>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-export async function getNoteListEndpointHandler(
+import { Response } from "express";
+import { ApiResponse } from "../../../types/Api.js";
+import { AuthenticatedRequest } from "../../../types/Api.js";
+import { StatusCode } from "status-code-enum";
+import { Note } from "../../../types/Entities.js";
+import newStatusMessage from "../../../util/newStatusMessage.js";
+import { getNoteStoreForUser } from "../../../lib/store/implemented/stores.js";
+
+export default async function getNoteListEndpointHandler(
   req: AuthenticatedRequest,
   res: Response
 ) {
@@ -14,11 +30,13 @@ export async function getNoteListEndpointHandler(
 
   let result: Note["id"][] = [];
 
-  try {
-    const list = await listNotesForUser(user.id);
+  const noteStore = getNoteStoreForUser(user.id);
 
-    for (const noteId of list) {
-      result.push(noteId);
+  try {
+    const list = await noteStore.ListAll();
+
+    for (const { itemId } of list) {
+      result.push(itemId);
     }
   } catch (err) {
     console.error(err);

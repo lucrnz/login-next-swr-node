@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-import { ApiResponseOrMessage } from "@/types/Api";
-import { User } from "@/types/User";
-import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
-import type { NextApiRequest, NextApiResponse } from "next";
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<
-    ApiResponseOrMessage<{
-      user: User;
-    }>
-  >
-) {
-  return await forwardRequestToBackend({
-    req,
-    res,
-    validMethod: "GET",
-    url: "me"
-  });
+export interface IItemStringEncoder<ItemType> {
+  Encode: (item: ItemType) => Promise<string>;
 }
+
+export interface IItemStringDecoder<ItemType> {
+  Decode: (encoded: string) => Promise<ItemType>;
+}
+
+export type IItemStringEncoderDecoder<ItemType> = IItemStringEncoder<ItemType> &
+  IItemStringDecoder<ItemType>;

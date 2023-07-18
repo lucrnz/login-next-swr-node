@@ -7,3 +7,4 @@ fe/node_modules
 fe/.next
 fe/dist
 package-lock.json
+LICENSE

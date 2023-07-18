@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-import { ApiResponseOrMessage } from "@/types/Api";
-import { User } from "@/types/User";
-import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
-import type { NextApiRequest, NextApiResponse } from "next";
+export type Note = {
+  id: string;
+  title: string;
+  contents: string;
+};
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<
-    ApiResponseOrMessage<{
-      user: User;
-    }>
-  >
-) {
-  return await forwardRequestToBackend({
-    req,
-    res,
-    validMethod: "GET",
-    url: "me"
-  });
-}
+export type UserWithPassword = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type User = Omit<UserWithPassword, "password">;
+
+export type SystemConfigValue = {
+  id: string;
+  value: string;
+};
+
+export type JWTTokenContents = {
+  userId: User["id"];
+};

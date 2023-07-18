@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "keywords": [],
   "author": "lucdev<lucdev.net>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

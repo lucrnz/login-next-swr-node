@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-import { ApiResponseOrMessage } from "@/types/Api";
-import { User } from "@/types/User";
-import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
-import type { NextApiRequest, NextApiResponse } from "next";
+function defaultValidator(value: string) {
+  return value.length > 0;
+}
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<
-    ApiResponseOrMessage<{
-      user: User;
-    }>
-  >
+/**
+ * @param values String array of all the fields
+ * @param validate Function reference for validating a field
+ * @returns The same "values" array if all the fields are valid, if not an empty array
+ */
+export default function validateAllFields(
+  values: (string | undefined)[],
+  validate: (value: string) => boolean = defaultValidator
 ) {
-  return await forwardRequestToBackend({
-    req,
-    res,
-    validMethod: "GET",
-    url: "me"
-  });
+  let valid = true;
+
+  for (const value of values) {
+    valid = valid && Boolean(value && validate(value));
+  }
+
+  return valid ? (values as string[]) : ([] as string[]);
 }
