@@ -46,16 +46,21 @@ export default async function signUpEndpointHandler(
 
   try {
     const store = await Store.GetInstance();
-    const passwordHash = await hashPassword(password);
 
-    const user = {
+    const userExists = await store.UserStore.FindUserByEmail(email);
+
+    if (userExists) {
+      return res
+        .status(StatusCode.ClientErrorConflict)
+        .json(newStatusMessage(false, "User email already used"));
+    }
+
+    await store.UserStore.RegisterUser({
       email,
       name,
-      password: passwordHash,
+      password,
       id: userId
-    } as UserWithPassword;
-
-    await store.UserStore.Write(user);
+    } as UserWithPassword);
   } catch (err) {
     console.error(err);
     return res

@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import type {
-  Note,
-  SystemConfigValue,
-  User,
-  UserWithPassword
-} from "../../types/Entities.js";
+import type { Note, SystemConfigValue, User } from "../../types/Entities.js";
 
 import dotenv from "dotenv";
 
@@ -33,18 +28,16 @@ import {
 } from "../generic/fs-bytes-store.js";
 import GenericItemStore from "../generic/item-store.js";
 import PasswordGenerator from "../../util/passwordGenerator.js";
-
-export enum ConfigStoreVariable {
-  PasswordHashSalt = "PasswordHashSalt",
-  JwtSecret = "JwtSecret"
-}
+import ConfigStore, { ConfigStoreVariable } from "./config-store.js";
+import UserStore from "./user-store.js";
 
 export enum EnvironmentVariable {
   Port = "Port",
   JwtSecret = "JwtSecret",
   JwtExpireTime = "JwtExpireTime",
   NodeEnv = "NodeEnv",
-  DataFolder = "DataFolder"
+  DataFolder = "DataFolder",
+  CreateAdminUser = "CreateAdminUser"
 }
 
 export default class Store {
@@ -55,7 +48,7 @@ export default class Store {
 
   private configStore: ConfigStore | null = null;
 
-  private userStore: GenericItemStore<UserWithPassword> | null = null;
+  private userStore: UserStore | null = null;
 
   private envVarsGetters: Record<
     EnvironmentVariable,
@@ -69,7 +62,9 @@ export default class Store {
     [EnvironmentVariable.NodeEnv]: () =>
       (process.env["NODE_ENV"] ?? "development").toLowerCase(),
     [EnvironmentVariable.DataFolder]: () =>
-      process.env["DATA_FOLDER"] ?? "./data"
+      process.env["DATA_FOLDER"] ?? "./data",
+    [EnvironmentVariable.CreateAdminUser]: () =>
+      process.env["CREATE_ADMIN_USER"] ?? "true"
   };
 
   private envVarsValues: Map<string, string> = new Map<string, string>();
@@ -103,6 +98,35 @@ export default class Store {
 
   private constructor() {}
 
+  private async initialize() {
+    if (Store.initialized) {
+      return;
+    }
+
+    try {
+      dotenv.config();
+
+      const getDataFolder = this.envVarsGetters[EnvironmentVariable.DataFolder];
+      this.bytesStore = new FileSystemBytesStore(getDataFolder() as string);
+      this.configStore = new ConfigStore(this.bytesStore);
+
+      Store.initialized = true;
+
+      for (const [variableName, getValue] of Object.entries(
+        this.envVarsGetters
+      )) {
+        let value = getValue();
+        value = value instanceof Promise ? await value : value;
+        this.envVarsValues.set(variableName, value);
+      }
+
+      this.userStore = new UserStore(this.bytesStore);
+    } catch (e) {
+      Store.initialized = false;
+      throw e;
+    }
+  }
+
   static async GetInstance() {
     if (!Store.instance) {
       Store.instance = new Store();
@@ -113,28 +137,6 @@ export default class Store {
     }
 
     return Store.instance;
-  }
-
-  private async initialize() {
-    if (Store.initialized) {
-      return;
-    }
-
-    dotenv.config();
-
-    const getDataFolder = this.envVarsGetters[EnvironmentVariable.DataFolder];
-    this.bytesStore = new FileSystemBytesStore(getDataFolder() as string);
-    this.configStore = new ConfigStore(this.bytesStore);
-
-    Store.initialized = true;
-
-    for (const [variableName, getValue] of Object.entries(
-      this.envVarsGetters
-    )) {
-      let value = getValue();
-      value = value instanceof Promise ? await value : value;
-      this.envVarsValues.set(variableName, value);
-    }
   }
 
   GetNoteStoreForUser(userId: User["id"]) {
@@ -173,40 +175,5 @@ export default class Store {
     }
 
     return this.envVarsValues.get(variableName) ?? "";
-  }
-}
-
-class ConfigStore {
-  private configItemId: Readonly<Map<ConfigStoreVariable, string>> = new Map<
-    ConfigStoreVariable,
-    string
-  >([
-    [
-      ConfigStoreVariable.PasswordHashSalt,
-      "0a9b3d56-1891-40f6-b005-901a772af78d"
-    ],
-    [ConfigStoreVariable.JwtSecret, "f1be8c81-390a-4ae9-ace5-14e477503a0d"]
-  ]);
-
-  private store: GenericItemStore<SystemConfigValue> | null = null;
-
-  constructor(bytesStore: GenericBytesStore) {
-    this.store = new GenericItemStore<SystemConfigValue>(
-      bytesStore,
-      "SystemConfigValue",
-      new JSONItemEncoderDecoder(),
-      new HexJSONItemEncoderDecoder()
-    );
-  }
-
-  get Store() {
-    if (!this.store) {
-      throw new Error();
-    }
-    return this.store;
-  }
-
-  get ConfigItemId() {
-    return this.configItemId;
   }
 }

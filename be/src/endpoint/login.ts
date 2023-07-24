@@ -21,7 +21,6 @@ import { JWTTokenContents, UserWithPassword } from "../types/Entities.js";
 import validateAllFields from "../util/validateAllFields.js";
 import newStatusMessage from "../util/newStatusMessage.js";
 import Store, { EnvironmentVariable } from "../store/implemented/stores.js";
-import hashPassword from "../util/hashPassword.js";
 import { ApiResponse, ApiStatusMessage } from "../types/Api.js";
 
 export default async function loginEndpointHandler(
@@ -41,18 +40,9 @@ export default async function loginEndpointHandler(
   }
 
   const [email, password] = values;
-  const foundUser = await store.UserStore.FindByContents(
-    (item) => item.email === email
-  );
+  const foundUser = await store.UserStore.ValidateUserLogin(email, password);
 
-  let validPassword = false;
-
-  if (foundUser) {
-    const passwordHash = await hashPassword(password);
-    validPassword = foundUser.password === passwordHash;
-  }
-
-  if (!foundUser || !validPassword) {
+  if (!foundUser) {
     return res.status(StatusCode.ClientErrorUnauthorized).send({
       success: false,
       data: { message: "Invalid email or password" }

@@ -50,7 +50,7 @@ export default async function authenticate(
 
   try {
     const { userId } = jwt.verify(token, secret) as JWTTokenContents;
-    const userExists = await store.UserStore.Exists(userId);
+    const userExists = await store.UserStore.Store.Exists(userId);
 
     if (!userExists) {
       return res.status(StatusCode.ClientErrorUnauthorized).send({
@@ -59,7 +59,7 @@ export default async function authenticate(
       } as ApiResponse<ApiStatusMessage>);
     }
 
-    const user = (await store.UserStore.Read(userId))!;
+    const user = (await store.UserStore.Store.Read(userId))!;
 
     // User is authenticated, add user object to request and call next middleware
     const { password, ...userData } = user;

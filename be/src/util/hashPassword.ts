@@ -16,7 +16,8 @@
 
 import type { SystemConfigValue } from "../types/Entities.js";
 import { randomBytes, scryptSync } from "crypto";
-import Store, { ConfigStoreVariable } from "../store/implemented/stores.js";
+import Store from "../store/implemented/stores.js";
+import { ConfigStoreVariable } from "../store/implemented/config-store.js";
 
 async function getPasswordSalt() {
   const store = await Store.GetInstance();
