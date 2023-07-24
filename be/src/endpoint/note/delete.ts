@@ -15,16 +15,17 @@
  */
 
 import { Response } from "express";
-import { AuthenticatedRequest } from "../../types/Api.js";
 import { StatusCode } from "status-code-enum";
+import { AuthenticatedRequest } from "../../types/Api.js";
 import newStatusMessage from "../../util/newStatusMessage.js";
-import { FileSystemBytesStoreErrors } from "../../lib/store/generic/fs-bytes-store.js";
-import { getNoteStoreForUser } from "../../lib/store/implemented/stores.js";
+import Store from "../../store/implemented/stores.js";
+import { FileSystemBytesStoreErrors } from "../../store/generic/fs-bytes-store.js";
 
 export default async function deleteNoteEndpointHandler(
   req: AuthenticatedRequest,
   res: Response
 ) {
+  const store = await Store.GetInstance();
   const user = req.user!;
   const noteId = req.query.id;
   const validNoteId = typeof noteId === "string" && noteId.length > 0;
@@ -35,7 +36,7 @@ export default async function deleteNoteEndpointHandler(
       .json(newStatusMessage(false, "Bad request"));
   }
 
-  const noteStore = getNoteStoreForUser(user.id);
+  const noteStore = store.GetNoteStoreForUser(user.id);
 
   try {
     await noteStore.Delete(noteId);

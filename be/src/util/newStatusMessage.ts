@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ApiResponse, ApiStatusMessage } from "../types/Api.js";
+import type { ApiResponse, ApiStatusMessage } from "../types/Api.js";
 
 export default function newStatusMessage(success: boolean, message: string) {
   return {

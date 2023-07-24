@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
+import type { SystemConfigValue } from "../types/Entities.js";
 import { randomBytes, scryptSync } from "crypto";
-import { configStore } from "./store/implemented/stores.js";
-import { SystemConfigValue } from "../types/Entities.js";
+import Store, { ConfigStoreVariable } from "../store/implemented/stores.js";
 
 async function getPasswordSalt() {
-  const sysCfgItemId = "pwd-hash";
+  const store = await Store.GetInstance();
+  const sysCfgItemId = store.ConfigStore.ConfigItemId.get(
+    ConfigStoreVariable.PasswordHashSalt
+  )!;
 
-  if (await configStore.Exists(sysCfgItemId)) {
-    const cfgItem = await configStore.Read(sysCfgItemId);
+  const cfgStore = store.ConfigStore.Store;
+
+  if (await cfgStore.Exists(sysCfgItemId)) {
+    const cfgItem = await cfgStore.Read(sysCfgItemId);
     return cfgItem!.value;
   }
 
@@ -31,7 +36,7 @@ async function getPasswordSalt() {
     value: randomBytes(64).toString("hex")
   } as SystemConfigValue;
 
-  await configStore.Write(cfgItem);
+  await cfgStore.Write(cfgItem);
 
   return cfgItem.value;
 }

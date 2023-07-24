@@ -15,22 +15,22 @@
  */
 
 import { Response } from "express";
-import { ApiResponse } from "../../../types/Api.js";
-import { AuthenticatedRequest } from "../../../types/Api.js";
-import { StatusCode } from "status-code-enum";
+import { ApiResponse, AuthenticatedRequest } from "../../../types/Api.js";
 import { Note } from "../../../types/Entities.js";
+import Store from "../../../store/implemented/stores.js";
+import { StatusCode } from "status-code-enum";
 import newStatusMessage from "../../../util/newStatusMessage.js";
-import { getNoteStoreForUser } from "../../../lib/store/implemented/stores.js";
 
 export default async function getNoteListEndpointHandler(
   req: AuthenticatedRequest,
   res: Response
 ) {
+  const store = await Store.GetInstance();
   const user = req.user!;
 
   let result: Note["id"][] = [];
 
-  const noteStore = getNoteStoreForUser(user.id);
+  const noteStore = store.GetNoteStoreForUser(user.id);
 
   try {
     const list = await noteStore.ListAll();

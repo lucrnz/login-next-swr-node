@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { Response, Request } from "express";
+import { v4 as uuidv4 } from "uuid";
 import { StatusCode } from "status-code-enum";
-import { ApiResponse, ApiResponseSignup } from "../types/Api.js";
 import { UserWithPassword } from "../types/Entities.js";
 import newStatusMessage from "../util/newStatusMessage.js";
-import type { Request, Response } from "express";
-import { userStore } from "../lib/store/implemented/stores.js";
-import { v4 as uuidv4 } from "uuid";
 import validateAllFields from "../util/validateAllFields.js";
-import hashPassword from "../lib/hash-password.js";
+import hashPassword from "../util/hashPassword.js";
+import Store from "../store/implemented/stores.js";
+import { ApiResponse, ApiResponseSignup } from "../types/Api.js";
 
 export default async function signUpEndpointHandler(
   req: Request,
@@ -45,6 +45,7 @@ export default async function signUpEndpointHandler(
   const userId = uuidv4();
 
   try {
+    const store = await Store.GetInstance();
     const passwordHash = await hashPassword(password);
 
     const user = {
@@ -54,7 +55,7 @@ export default async function signUpEndpointHandler(
       id: userId
     } as UserWithPassword;
 
-    await userStore.Write(user);
+    await store.UserStore.Write(user);
   } catch (err) {
     console.error(err);
     return res

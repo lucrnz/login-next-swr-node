@@ -15,7 +15,7 @@
  */
 
 import type { Request, Response } from "express";
-import { ApiResponse, ApiStatusMessage } from "../types/Api.js";
+import type { ApiResponse, ApiStatusMessage } from "../types/Api.js";
 
 export default async function logoutEndpointHandler(
   req: Request,

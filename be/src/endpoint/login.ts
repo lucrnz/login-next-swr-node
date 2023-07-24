@@ -15,23 +15,21 @@
  */
 
 import { StatusCode } from "status-code-enum";
-import { JWTTokenContents, UserWithPassword } from "../types/Entities.js";
 import type { CookieOptions, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { EnvironmentVariable, getEnvironmentVariable } from "../env.js";
-import newStatusMessage from "../util/newStatusMessage.js";
-import hashPassword from "../lib/hash-password.js";
+import { JWTTokenContents, UserWithPassword } from "../types/Entities.js";
 import validateAllFields from "../util/validateAllFields.js";
-import { userStore } from "../lib/store/implemented/stores.js";
+import newStatusMessage from "../util/newStatusMessage.js";
+import Store, { EnvironmentVariable } from "../store/implemented/stores.js";
+import hashPassword from "../util/hashPassword.js";
 import { ApiResponse, ApiStatusMessage } from "../types/Api.js";
 
 export default async function loginEndpointHandler(
   req: Request,
   res: Response
 ) {
-  const secret = getEnvironmentVariable(
-    EnvironmentVariable.JwtSecret
-  ) as string;
+  const store = await Store.GetInstance();
+  const secret = store.GetEnvironmentVariable(EnvironmentVariable.JwtSecret);
 
   const body = req.body as Partial<UserWithPassword>;
   const values = validateAllFields([body.email, body.password]);
@@ -43,7 +41,7 @@ export default async function loginEndpointHandler(
   }
 
   const [email, password] = values;
-  const foundUser = await userStore.FindByContents(
+  const foundUser = await store.UserStore.FindByContents(
     (item) => item.email === email
   );
 
@@ -62,16 +60,13 @@ export default async function loginEndpointHandler(
   }
 
   const token = jwt.sign({ userId: foundUser.id } as JWTTokenContents, secret, {
-    expiresIn: getEnvironmentVariable(
-      EnvironmentVariable.JwtExpireTime
-    ).toString()
+    expiresIn: store.GetEnvironmentVariable(EnvironmentVariable.JwtExpireTime)
   });
 
   res.setHeader("cache-control", "no-cache");
 
   const cookieConfig: CookieOptions =
-    getEnvironmentVariable(EnvironmentVariable.NodeEnv).toString() ===
-    "production"
+    store.GetEnvironmentVariable(EnvironmentVariable.NodeEnv) === "production"
       ? { httpOnly: true, sameSite: "none", secure: true }
       : { httpOnly: true };
 

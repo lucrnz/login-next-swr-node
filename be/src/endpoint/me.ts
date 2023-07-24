@@ -15,8 +15,8 @@
  */
 
 import { Response } from "express";
-import { ApiResponse, AuthenticatedRequest } from "../types/Api.js";
-import { User } from "../types/Entities.js";
+import type { ApiResponse, AuthenticatedRequest } from "../types/Api.js";
+import type { User } from "../types/Entities.js";
 
 export default async function meEndpointHandler(
   req: AuthenticatedRequest,

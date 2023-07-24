@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import { NextFunction, Response } from "express";
-import { StatusCode } from "status-code-enum";
-import jwt from "jsonwebtoken";
-import { JWTTokenContents, UserWithPassword } from "../types/Entities.js";
-import {
+import type { NextFunction, Response } from "express";
+import type {
   ApiResponse,
   ApiStatusMessage,
   AuthenticatedRequest
 } from "../types/Api.js";
-import { EnvironmentVariable, getEnvironmentVariable } from "../env.js";
-import { userStore } from "../lib/store/implemented/stores.js";
+import { StatusCode } from "status-code-enum";
+import jwt from "jsonwebtoken";
+import { JWTTokenContents } from "../types/Entities.js";
+import Store, { EnvironmentVariable } from "../store/implemented/stores.js";
 
 const messages = {
   authRequired: "Authentication required",
@@ -38,10 +37,8 @@ export default async function authenticate(
   res: Response,
   next: NextFunction
 ) {
-  const secret = getEnvironmentVariable(
-    EnvironmentVariable.JwtSecret
-  ) as string;
-
+  const store = await Store.GetInstance();
+  const secret = store.GetEnvironmentVariable(EnvironmentVariable.JwtSecret);
   const token: string | undefined = req.cookies.token;
 
   if (!token || token === "deleted") {
@@ -53,7 +50,7 @@ export default async function authenticate(
 
   try {
     const { userId } = jwt.verify(token, secret) as JWTTokenContents;
-    const userExists = await userStore.Exists(userId);
+    const userExists = await store.UserStore.Exists(userId);
 
     if (!userExists) {
       return res.status(StatusCode.ClientErrorUnauthorized).send({
@@ -62,7 +59,7 @@ export default async function authenticate(
       } as ApiResponse<ApiStatusMessage>);
     }
 
-    const user = (await userStore.Read(userId))!;
+    const user = (await store.UserStore.Read(userId))!;
 
     // User is authenticated, add user object to request and call next middleware
     const { password, ...userData } = user;

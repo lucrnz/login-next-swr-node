@@ -17,8 +17,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-import { EnvironmentVariable, getEnvironmentVariable } from "./env.js";
+
 import indexEndpointHandler from "./endpoint/index.js";
 import loginEndpointHandler from "./endpoint/login.js";
 import logoutEndpointHandler from "./endpoint/logout.js";
@@ -30,32 +29,36 @@ import getNoteListEndpointHandler from "./endpoint/note/list/get.js";
 import postNoteEndpointHandler from "./endpoint/note/post.js";
 import deleteNoteEndpointHandler from "./endpoint/note/delete.js";
 import signUpEndpointHandler from "./endpoint/signup.js";
+import Store, { EnvironmentVariable } from "./store/implemented/stores.js";
 
-dotenv.config();
+async function main() {
+  const store = await Store.GetInstance();
+  const app = express();
 
-const app = express();
+  app.use(cors());
+  app.use(express.json());
+  app.use(cookieParser());
 
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+  app.get("/", indexEndpointHandler);
 
-app.get("/", indexEndpointHandler);
+  app.post("/login", loginEndpointHandler);
+  app.post("/logout", logoutEndpointHandler);
 
-app.post("/login", loginEndpointHandler);
-app.post("/logout", logoutEndpointHandler);
+  app.post("/signup", signUpEndpointHandler);
 
-app.post("/signup", signUpEndpointHandler);
+  app.get("/me", authenticate, meEndpointHandler);
+  app.get("/hello", authenticate, helloEndpointHandler);
 
-app.get("/me", authenticate, meEndpointHandler);
-app.get("/hello", authenticate, helloEndpointHandler);
+  app.get("/note", authenticate, getNoteEndpointHandler);
+  app.get("/note/list", authenticate, getNoteListEndpointHandler);
+  app.post("/note", authenticate, postNoteEndpointHandler);
+  app.delete("/note", authenticate, deleteNoteEndpointHandler);
 
-app.get("/note", authenticate, getNoteEndpointHandler);
-app.get("/note/list", authenticate, getNoteListEndpointHandler);
-app.post("/note", authenticate, postNoteEndpointHandler);
-app.delete("/note", authenticate, deleteNoteEndpointHandler);
+  const port = Number(store.GetEnvironmentVariable(EnvironmentVariable.Port));
 
-const port = getEnvironmentVariable(EnvironmentVariable.Port) as number;
+  app.listen(port, () => {
+    console.log(`API Server running at http://localhost:${port}`);
+  });
+}
 
-app.listen(port, () => {
-  console.log(`API Server running at http://localhost:${port}`);
-});
+main();

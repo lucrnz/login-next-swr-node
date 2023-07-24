@@ -15,27 +15,27 @@
  */
 
 import { Response } from "express";
+import { StatusCode } from "status-code-enum";
+import { v4 as uuidv4 } from "uuid";
 import {
   ApiBodyPostNote,
   ApiResponse,
   ApiResponsePostNote,
   AuthenticatedRequest
 } from "../../types/Api.js";
-
-import { StatusCode } from "status-code-enum";
-import { v4 as uuidv4 } from "uuid";
-import type { Note } from "../../types/Entities.js";
+import Store from "../../store/implemented/stores.js";
+import { Note } from "../../types/Entities.js";
 import newStatusMessage from "../../util/newStatusMessage.js";
-import { getNoteStoreForUser } from "../../lib/store/implemented/stores.js";
 
 export default async function postNoteEndpointHandler(
   req: AuthenticatedRequest,
   res: Response
 ) {
+  const store = await Store.GetInstance();
   const user = req.user!;
   const body = req.body as ApiBodyPostNote;
 
-  const noteStore = getNoteStoreForUser(user.id);
+  const noteStore = store.GetNoteStoreForUser(user.id);
 
   let noteId: Note["id"] | null = null;
 

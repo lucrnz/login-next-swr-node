@@ -15,16 +15,17 @@
  */
 
 import { Response } from "express";
-import { ApiResponse, AuthenticatedRequest } from "../../types/Api.js";
-import { Note } from "../../types/Entities.js";
 import { StatusCode } from "status-code-enum";
 import newStatusMessage from "../../util/newStatusMessage.js";
-import { getNoteStoreForUser } from "../../lib/store/implemented/stores.js";
+import { ApiResponse, AuthenticatedRequest } from "../../types/Api.js";
+import Store from "../../store/implemented/stores.js";
+import { Note } from "../../types/Entities.js";
 
 export default async function getNoteEndpointHandler(
   req: AuthenticatedRequest,
   res: Response
 ) {
+  const store = await Store.GetInstance();
   const user = req.user!;
 
   const noteId = req.query.id;
@@ -36,7 +37,7 @@ export default async function getNoteEndpointHandler(
       .json(newStatusMessage(false, "Bad request"));
   }
 
-  const noteStore = getNoteStoreForUser(user.id);
+  const noteStore = store.GetNoteStoreForUser(user.id);
 
   let note: Note | null = null;
 

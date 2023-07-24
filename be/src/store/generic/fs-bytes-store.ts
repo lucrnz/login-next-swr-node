@@ -32,7 +32,6 @@ export const FileSystemBytesStoreErrors = {
 
 export class FileSystemBytesStore implements GenericBytesStore {
   private prefix: string = "fsbs-";
-
   constructor(private dataFolder: string) {}
 
   private getItemFilePath(name: string) {

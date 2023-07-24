@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import { IItemStringEncoderDecoder } from "../../../types/IItemStringEncoder.js";
-import {
-  FileSystemBytesStoreErrors,
-  GenericBytesStore
-} from "./fs-bytes-store.js";
+import { IItemStringEncoderDecoder } from "../../types/IItemStringEncoder.js";
+import { GenericBytesStore } from "./fs-bytes-store.js";
 
 interface HasId {
   id: string;
@@ -26,15 +23,15 @@ interface HasId {
 
 type ItemMetaData = {
   entityName: string;
-  discriminator?: string;
   itemId: string;
+  discriminator?: string;
 };
 
-type SerializedItemMetaData = [
-  string, // EntityName
-  string, // Discriminator
-  string // ItemId
-];
+type SerializedItemMetaData = {
+  Item1: string; // EntityName
+  Item2: string; // ItemId
+  Item3: string; // Discriminator
+};
 
 /**
  * This class is for storing Items of an specific type that have an Id.
@@ -50,11 +47,11 @@ export default class GenericItemStore<ItemType extends HasId> {
   ) {}
 
   private async getItemStoreName(itemId: ItemType["id"]) {
-    const metaData = [
-      this.entityName,
-      this.discriminator ?? "",
-      itemId
-    ] as SerializedItemMetaData;
+    const metaData = {
+      Item1: this.entityName,
+      Item2: itemId,
+      Item3: this.discriminator ?? ""
+    } as SerializedItemMetaData;
 
     return await this.metadataEncoderDecoder.Encode(metaData);
   }
@@ -83,11 +80,9 @@ export default class GenericItemStore<ItemType extends HasId> {
   async Delete(itemId: ItemType["id"]) {
     const itemStoreName = await this.getItemStoreName(itemId);
 
-    if (!(await this.bytesStore.Exists(itemStoreName))) {
-      throw new Error(FileSystemBytesStoreErrors.itemNotExists);
+    if (await this.bytesStore.Exists(itemStoreName)) {
+      await this.bytesStore.Delete(itemStoreName);
     }
-
-    await this.bytesStore.Delete(itemStoreName);
   }
 
   async ListAll() {
@@ -99,7 +94,7 @@ export default class GenericItemStore<ItemType extends HasId> {
         encodedMetaData
       );
 
-      const entityName = metaData[0];
+      const entityName = metaData.Item1;
 
       if (this.entityName !== entityName) {
         continue;
@@ -107,8 +102,8 @@ export default class GenericItemStore<ItemType extends HasId> {
 
       const item = {
         entityName: entityName,
-        discriminator: metaData[1].length > 0 ? metaData[1] : undefined,
-        itemId: metaData[2]
+        itemId: metaData.Item2,
+        discriminator: metaData.Item3.length > 0 ? metaData.Item3 : undefined
       } as ItemMetaData;
 
       const pushItem =
