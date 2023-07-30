@@ -23,6 +23,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import StatusCode from "status-code-enum";
 import fetchBackend from "./fetchBackend";
 import { CustomFetchResult } from "./customFetch";
+import { enableCaptcha } from "@/config";
+import verifyCaptcha from "./verifyCaptcha";
 
 type ForwardRequestToBackendOptions<T> = {
   req: NextApiRequest;
@@ -31,6 +33,7 @@ type ForwardRequestToBackendOptions<T> = {
   url: string;
   cacheControl?: string;
   params?: { [key: string]: string };
+  checkCaptcha?: boolean;
   onResponseFetch?: (
     req: NextApiRequest,
     res: NextApiResponse<ApiResponseOrMessage<T>>,
@@ -45,6 +48,7 @@ export default async function forwardRequestToBackend<T>({
   url,
   cacheControl,
   params,
+  checkCaptcha,
   onResponseFetch
 }: ForwardRequestToBackendOptions<T>) {
   const isMethodValid = Array.isArray(validMethod)
@@ -55,6 +59,21 @@ export default async function forwardRequestToBackend<T>({
     res
       .status(StatusCode.ClientErrorBadRequest)
       .send({ success: false, data: { message: "Bad request" } });
+  }
+
+  const shouldCheckCaptcha = enableCaptcha && Boolean(checkCaptcha);
+  let validCaptcha = !shouldCheckCaptcha;
+
+  if (shouldCheckCaptcha) {
+    const captchaToken = req.headers["captcha-token"] as string;
+    validCaptcha = await verifyCaptcha(captchaToken);
+  }
+
+  if (!validCaptcha) {
+    return res.status(StatusCode.ClientErrorBadRequest).send({
+      success: false,
+      data: { message: "Invalid captcha, please try again." }
+    });
   }
 
   try {

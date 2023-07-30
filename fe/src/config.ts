@@ -20,3 +20,4 @@ export const displayNoteMaxLines = 5;
 export const enableCaptcha =
   (process.env["NEXT_PUBLIC_ENABLE_CAPTCHA"] || "false").toLowerCase() ===
   "true";
+export const captchaSiteKey = process.env["NEXT_PUBLIC_HCAPTCHA_SITEKEY"] || "";

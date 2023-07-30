@@ -18,11 +18,46 @@ import { ApiStatusMessage } from "@/types/Api";
 import { fetchApi } from "./api";
 import { UserWithPassword } from "@/types/Entities";
 
-export default async function loginAction(userData: Partial<UserWithPassword>) {
+export async function loginAction(
+  userData: Partial<UserWithPassword>,
+  captchaToken: string
+) {
   const { data } = await fetchApi<ApiStatusMessage, typeof userData>({
     url: "login",
     method: "POST",
-    body: userData
+    body: userData,
+    config: {
+      headers: {
+        "captcha-token": captchaToken
+      }
+    }
+  });
+
+  return data;
+}
+
+export async function logoutAction() {
+  const { data } = await fetchApi<ApiStatusMessage, never>({
+    url: "logout",
+    method: "POST"
+  });
+
+  return data;
+}
+
+export async function signUpAction(
+  user: Omit<UserWithPassword, "id">,
+  captchaToken: string
+) {
+  const { data } = await fetchApi<ApiStatusMessage, typeof user>({
+    url: "signup",
+    method: "POST",
+    body: user,
+    config: {
+      headers: {
+        "captcha-token": captchaToken
+      }
+    }
   });
 
   return data;

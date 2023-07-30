@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-import { ApiResponseOrMessage } from "@/types/Api";
+import { enableCaptcha } from "@/config";
+import { ApiResponseOrMessage, ApiResponseSignup } from "@/types/Api";
 import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
+import verifyCaptcha from "@/utils/verifyCaptcha";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { StatusCode } from "status-code-enum";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponseOrMessage<string>>
+  res: NextApiResponse<ApiResponseOrMessage<ApiResponseSignup>>
 ) {
   return await forwardRequestToBackend({
     req,
     res,
-    url: "login",
+    url: "signup",
     validMethod: "POST",
     cacheControl: "no-cache",
-    checkCaptcha: true,
-    onResponseFetch: async (_, res, apiResponse) => {
-      if (apiResponse.ok) {
-        const cookies = apiResponse.headers.get("set-cookie");
-
-        if (cookies) {
-          console.log("[next] setting cookies");
-          res.setHeader("set-cookie", cookies);
-        }
-      }
-    }
+    checkCaptcha: true
   });
 }

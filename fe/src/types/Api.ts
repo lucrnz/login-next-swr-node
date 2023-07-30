@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Note } from "./Entities";
+import { Note, User } from "./Entities";
 
 export type ApiResponse<T> = {
   success: boolean;
@@ -33,4 +33,8 @@ export type ApiBodyPostNote = {
 
 export type ApiResponsePostNote = {
   noteId: Note["id"];
+};
+
+export type ApiResponseSignup = {
+  userId: User["id"];
 };
