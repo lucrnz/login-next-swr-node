@@ -15,7 +15,7 @@
  */
 
 import { ApiResponseOrMessage } from "@/types/Api";
-import { User } from "@/types/User";
+import { User } from "@/types/Entities";
 import forwardRequestToBackend from "@/utils/forwardRequestToBackend";
 import type { NextApiRequest, NextApiResponse } from "next";
 
