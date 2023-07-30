@@ -16,7 +16,7 @@
 
 import useSWR from "swr";
 import { getApiFetcher } from "@/utils/api";
-import { User } from "@/types/User";
+import { User } from "@/types/Entities";
 
 function useUser() {
   const userFetcher = getApiFetcher<User, never>({

@@ -22,8 +22,8 @@ import useFormValidation, {
   emptyStringValidation
 } from "@/hooks/useFormValidation";
 import awaitCallbackIfNeeded from "@/utils/awaitCallbackIfNeeded";
-import saveNote from "@/utils/saveNote";
 import { ApiResponsePostNote } from "@/types/Api";
+import { saveNoteAction } from "@/utils/actions";
 
 const Field = {
   Title: "Title",
@@ -91,7 +91,7 @@ export default function NewNoteForm({
 
     let data: ApiResponsePostNote | null = null;
     try {
-      data = await saveNote(note);
+      data = await saveNoteAction(note);
     } catch (err) {
       data = null;
       const error = err as Error;

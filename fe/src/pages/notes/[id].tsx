@@ -19,10 +19,10 @@ import MainLayout from "@/components/MainLayout/MainLayout";
 import useNote from "@/hooks/Notes/useNote";
 import useUser from "@/hooks/User/useUser";
 import { Note } from "@/types/Entities";
-import saveNote from "@/utils/saveNote";
 import { useRouter } from "next/router";
 import { PropsWithChildren, useState } from "react";
 import Card from "@/components/Card/Card";
+import { saveNoteAction } from "@/utils/actions";
 
 type LayoutProps = PropsWithChildren<{
   title: string;
@@ -69,7 +69,7 @@ export default function NoteIdPage() {
 
   async function onSaveNote(note: Note) {
     setIsSavingNote((_) => true);
-    await saveNote(note);
+    await saveNoteAction(note);
     setIsSavingNote((_) => false);
   }
 

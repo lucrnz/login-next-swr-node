@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import { ApiStatusMessage } from "@/types/Api";
+import type { Note, UserWithPassword } from "@/types/Entities";
+import type {
+  ApiBodyPostNote,
+  ApiResponsePostNote,
+  ApiStatusMessage
+} from "@/types/Api";
 import { fetchApi } from "./api";
-import { UserWithPassword } from "@/types/Entities";
 
 export async function loginAction(
   userData: Partial<UserWithPassword>,
@@ -61,4 +65,24 @@ export async function signUpAction(
   });
 
   return data;
+}
+
+export async function saveNoteAction(note: Note) {
+  const { data: apiResult } = await fetchApi<
+    ApiResponsePostNote,
+    ApiBodyPostNote
+  >({
+    url: `note/${note.id}`,
+    method: "POST",
+    body: { note }
+  });
+
+  const { data } = apiResult;
+
+  if (!apiResult.success) {
+    const { message } = data as ApiStatusMessage;
+    throw new Error(message);
+  }
+
+  return data as ApiResponsePostNote;
 }
