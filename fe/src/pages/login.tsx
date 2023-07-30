@@ -20,14 +20,14 @@ import { useState, useRef, useEffect } from "react";
 import type { FormEvent } from "react";
 import { UserWithPassword } from "@/types/Entities";
 import MainLayout from "@/components/MainLayout/MainLayout";
-import loginAction from "@/utils/loginAction";
+import { loginAction } from "@/utils/actions";
 import { useRouter } from "next/router";
-import { defaultPageLoggedIn, enableCaptcha } from "@/config";
+import { captchaSiteKey, defaultPageLoggedIn, enableCaptcha } from "@/config";
 import useUser from "@/hooks/User/useUser";
 import Card from "@/components/Card/Card";
 import useFormValidation from "@/hooks/useFormValidation";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { fetchApi } from "@/utils/api";
+import Link from "next/link";
 
 const Field = {
   Email: "Email",
@@ -47,10 +47,6 @@ const validations = {
   }
 };
 
-const captchaSiteKey = enableCaptcha
-  ? process.env["NEXT_PUBLIC_HCAPTCHA_SITEKEY"]!
-  : "";
-
 export default function LoginPage() {
   const router = useRouter();
 
@@ -58,8 +54,9 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const { loggedOut, loading: loadingUser } = useUser();
-  const [captchaVerified, setCaptchaVerified] = useState(!enableCaptcha);
+  const [captchaToken, setCaptchaToken] = useState("");
   const providedMessage = router.query?.message || "";
+  const defaultEmail = (router.query?.email as string) || "";
   const [message, setMessage] = useState(
     providedMessage
       ? Array.isArray(providedMessage)
@@ -95,7 +92,7 @@ export default function LoginPage() {
       return;
     }
 
-    if (enableCaptcha && !captchaVerified) {
+    if (enableCaptcha && captchaToken.length === 0) {
       return setMessage((_) => "Invalid captcha, please try again.");
     }
 
@@ -105,7 +102,7 @@ export default function LoginPage() {
       password: values[Field.Password]
     } as Partial<UserWithPassword>;
 
-    const loginResult = await loginAction(userData);
+    const loginResult = await loginAction(userData, captchaToken);
 
     if (loginResult.success) {
       setIsRedirecting((_) => true);
@@ -115,30 +112,7 @@ export default function LoginPage() {
   }
 
   async function captchaOnVerify(token: string, _: string) {
-    const body = { token };
-    let success = false;
-
-    setMessage((_) => "");
-
-    try {
-      const result = await fetchApi<unknown, typeof body>({
-        method: "POST",
-        url: "verifycaptcha",
-        body
-      });
-      success = result.ok;
-    } catch (err) {
-      console.error(err);
-      success = false;
-    } finally {
-      if (success) {
-        setCaptchaVerified((_) => true);
-      } else {
-        setMessage(
-          (_) => "An unexpected error has occurred, please try again later."
-        );
-      }
-    }
+    setCaptchaToken((_) => token);
   }
 
   return (
@@ -168,6 +142,7 @@ export default function LoginPage() {
                   type="email"
                   className={commonStyles["text-field"]}
                   onBlur={() => validateField(Field.Email)}
+                  defaultValue={defaultEmail}
                 />
                 {getValidationErrorsForField(Field.Email).map(
                   (message, index) => (
@@ -197,6 +172,12 @@ export default function LoginPage() {
                 <span className={commonStyles["text-error"]}>{loginError}</span>
               )}
               <div>
+                <div className={styles["account-notice"]}>
+                  <span>Don't have an account?</span>
+                  <Link href="/signup" className={commonStyles["link"]}>
+                    Create an account here.
+                  </Link>
+                </div>
                 {enableCaptcha && (
                   <HCaptcha
                     sitekey={captchaSiteKey}
