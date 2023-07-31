@@ -24,6 +24,7 @@ import useFormValidation, {
 import awaitCallbackIfNeeded from "@/utils/awaitCallbackIfNeeded";
 import { ApiResponsePostNote } from "@/types/Api";
 import { saveNoteAction } from "@/utils/actions";
+import emptyUuid from "@/utils/empty-uuid";
 
 const Field = {
   Title: "Title",
@@ -82,7 +83,7 @@ export default function NewNoteForm({
     const values = getInputValues();
 
     let note = {
-      id: "",
+      id: emptyUuid,
       title: values[Field.Title],
       contents: values[Field.Contents]
     } as Note;
