@@ -8,8 +8,6 @@ There is a backend written with Node and a front-end written using [Next.js](htt
 
 There are multiple cases where your project will have a backend team with an API made with their preffered language (such as Java, C#, or even JavaScript).
 
-**New:** For an example C# back-end [see this repo](https://github.com/lucrnz/notes-be-cs)
-
 And the front-end team will opt to use Next js to be able to use SSR and other features that are nicer than default React.
 
 In this example, our backend team (an Express api) is setting a cookie, and we (the front-end team) have to use that api via our proxy (`pages/api/*`) and respect the user cookies.
